@@ -2,13 +2,19 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://boygioi85:Boypro12345@kq-shopdb.bipdj.mongodb.net/kq-shop?retryWrites=true&w=majority&appName=kq-shopDB',
-    ),
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_DATABASE'),
+      }),
+    }),
     UserModule,
   ],
   controllers: [AppController],
