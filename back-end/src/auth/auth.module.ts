@@ -15,11 +15,11 @@ import { JwtStrategy } from './guards/jwt.strategy';
       useFactory: (config: ConfigService) => {
         return {
           secret: config.get<string>('JWT_SECRET'),
-          signOptions:{
+          signOptions: {
             expiresIn: config.get<string | number>('JWT_EXPIRES'),
-          }
-        }
-      }
+          },
+        };
+      },
     }),
   ],
   controllers: [AuthController],
