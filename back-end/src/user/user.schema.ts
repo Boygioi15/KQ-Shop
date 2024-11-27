@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Role } from './constant';
+import { CartItem } from 'src/cart/cartItem.schema';
 
 export type UserDocument = User & Document;
 
@@ -32,6 +33,9 @@ export class User {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({type: [CartItem]})
+  cart: CartItem[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

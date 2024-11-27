@@ -23,7 +23,6 @@ class Product_Types_Detail {
   @Prop()
   sku: string;
 }
-const Product_Types_Detail_Schema = SchemaFactory.createForClass(Product_Types_Detail);
 @Schema()
 class Product_Types{
     @Prop({type: Types.ObjectId, auto: true, unique: true, required: true})
