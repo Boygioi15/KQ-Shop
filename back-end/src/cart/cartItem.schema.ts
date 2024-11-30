@@ -15,3 +15,5 @@ export class CartItem {
   @Prop({required: true})
   quantity: Number;
 }
+
+export const CartItemSchema = SchemaFactory.createForClass(CartItem);

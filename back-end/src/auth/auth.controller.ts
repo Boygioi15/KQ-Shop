@@ -1,28 +1,92 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Post, UnauthorizedException, BadRequestException, Get, Request, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport'
 
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from 'src/user/dto/register-user.dto';
-import { UserDetails } from 'src/user/dto/user-details.dto';
-import { LoginUserDto } from 'src/user/dto/login-user.dto';
+import { RegisterDto } from './dto/register.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { LoginUserDto } from './dto/login.dto';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('register')
-  register(@Body() user: RegisterUserDto): Promise<UserDetails | null> {
-    return this.authService.register(user);
+  @Post('sign-up')
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  login(@Body() user: LoginUserDto): Promise<{ token: string } | null> {
-    return this.authService.login(user);
+  @Post('verify-otp')
+  async verifyOtpSignUp(
+    @Body() verifyOtpDto: VerifyOtpDto,
+    @Headers('Authorization') token: string
+  ) {
+    if (!token) {
+      throw new UnauthorizedException('Token is required');
+    }
+    return this.authService.verifyOtpSignUp(verifyOtpDto, token);
+  }
+  
+  @Post('sign-in')
+  async login(@Body() loginUserDto: LoginUserDto) {
+    const { identifier, password } = loginUserDto;
+
+    if (this.isPhoneNumber(identifier)) {
+      return this.authService.loginWithPhone(identifier);
+    } else if (this.isValidEmail(identifier)) {
+      if (!password) {
+        throw new BadRequestException('Password is required for email login.');
+      }
+      return this.authService.loginWithEmail(identifier, password);
+    } else {
+      throw new BadRequestException('Invalid identifier. Provide email or phone number.');
+    }
+  }
+  
+  @Post('sign-in/verify-otp')
+  async verifyOtpSignIn(@Body() verifyOtpDto: VerifyOtpDto) {
+    if (!verifyOtpDto.otp) {
+      throw new BadRequestException('OTP is required');
+    }
+    return this.authService.verifyOtpSignIn(verifyOtpDto);
   }
 
-  //   @Post('verify-jwt')
-  //   @HttpCode(HttpStatus.OK)
-  //   verifyJwt(@Body() payload: { jwt: string }) {
-  //     return this.authService.verifyJwt(payload.jwt);
-  //   }
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) { }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req)
+  }
+
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuth(@Req() req) {}
+
+  @Get('facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuthRedirect(@Req() req) {
+    return this.authService.facebookLogin(req);
+  }
+
+  @Post('logout')
+  async logout(@Request() req) {
+      const token = req.headers['authorization']?.split(' ')[1];
+      return this.authService.logout(token);
+  }
+
+  private isPhoneNumber(identifier: string): boolean {
+    return /^\+?[0-9]+$/.test(identifier);
+  }
+
+  private isValidEmail(identifier: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
+  }
+
+//   @Post('verify-jwt')
+//   @HttpCode(HttpStatus.OK)
+//   verifyJwt(@Body() payload: { jwt: string }) {
+//     return this.authService.verifyJwt(payload.jwt);
+//   }
 }

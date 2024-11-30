@@ -1,41 +1,47 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Role } from './constant';
-import { CartItem } from 'src/cart/cartItem.schema';
 
 export type UserDocument = User & Document;
 
+export enum Role {
+    User = 'user',
+    Admin = 'admin',
+}
+
 @Schema()
 export class User {
-  @Prop({ require: true })
+  @Prop({ required: true }) 
   name: string;
 
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true }) 
   email: string;
-
-  @Prop({ required: true })
+  
+  @Prop({}) 
   password: string;
 
-  @Prop({ require: true })
+  @Prop({}) 
   phone: string;
-
-  @Prop()
+  
+  @Prop() 
   image: string;
 
-  @Prop({ default: Role.User, enum: [Role.Admin, Role.User] })
+  @Prop({ default: Role.User, enum: [Role.Admin, Role.User] }) 
   role: string;
 
-  @Prop({ default: false })
+  @Prop({ default: false }) 
   isSeller: boolean;
 
   @Prop()
   address: string;
 
+  @Prop({ unique: true, sparse: true }) 
+  googleId?: string;
+
+  @Prop({ unique: true, sparse: true }) 
+  facebookId?: string;
+
   @Prop({ default: Date.now })
   createdAt: Date;
-
-  @Prop({type: [CartItem]})
-  cart: CartItem[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
