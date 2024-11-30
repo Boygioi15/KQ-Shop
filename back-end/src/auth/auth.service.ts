@@ -58,9 +58,7 @@ export class AuthService {
     return this.userService._getUserDetails(user);
   }
 
-  async login(
-    existingUser: LoginUserDto,
-  ): Promise<{ token: string } | null> {
+  async login(existingUser: LoginUserDto): Promise<{ token: string } | null> {
     const { email, password } = existingUser;
     const user = await this.validateUser(email, password);
 
@@ -71,12 +69,12 @@ export class AuthService {
     return { token: jwt };
   }
 
-//   async verifyJwt(jwt: string): Promise<{ exp: number }> {
-//     try {
-//       const { exp } = await this.jwtService.verifyAsync(jwt);
-//       return { exp };
-//     } catch (error) {
-//       throw new HttpException('Invalid JWT', HttpStatus.UNAUTHORIZED);
-//     }
-//   }
+  //   async verifyJwt(jwt: string): Promise<{ exp: number }> {
+  //     try {
+  //       const { exp } = await this.jwtService.verifyAsync(jwt);
+  //       return { exp };
+  //     } catch (error) {
+  //       throw new HttpException('Invalid JWT', HttpStatus.UNAUTHORIZED);
+  //     }
+  //   }
 }

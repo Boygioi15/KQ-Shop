@@ -5,7 +5,7 @@ import { RegisterUserDto } from 'src/user/dto/register-user.dto';
 import { UserDetails } from 'src/user/dto/user-details.dto';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
@@ -20,9 +20,9 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-//   @Post('verify-jwt')
-//   @HttpCode(HttpStatus.OK)
-//   verifyJwt(@Body() payload: { jwt: string }) {
-//     return this.authService.verifyJwt(payload.jwt);
-//   }
+  //   @Post('verify-jwt')
+  //   @HttpCode(HttpStatus.OK)
+  //   verifyJwt(@Body() payload: { jwt: string }) {
+  //     return this.authService.verifyJwt(payload.jwt);
+  //   }
 }
