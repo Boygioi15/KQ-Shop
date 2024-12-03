@@ -17,14 +17,20 @@ import { FacebookStrategy } from './guards/facebook.strategy';
       useFactory: (config: ConfigService) => {
         return {
           secret: config.get<string>('JWT_SECRET'),
-          signOptions:{
+          signOptions: {
             expiresIn: config.get<string | number>('JWT_EXPIRES'),
-          }
-        }
-      }
+          },
+        };
+      },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtGuard, GoogleStrategy, FacebookStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtGuard,
+    GoogleStrategy,
+    FacebookStrategy,
+  ],
 })
 export class AuthModule {}

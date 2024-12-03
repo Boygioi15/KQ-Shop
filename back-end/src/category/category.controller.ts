@@ -25,9 +25,7 @@ export class CategoryController {
     return this.categoryService.findAll();
   }
   @Get('/ancestors-detail/:id')
-  getAncestors(
-    @Param('id') id: string,
-  ){
+  getAncestors(@Param('id') id: string) {
     return this.categoryService.getAncestorsDetail(id);
   }
   @Get(':id')
@@ -42,7 +40,7 @@ export class CategoryController {
   ) {
     return this.categoryService.update(id, updateCategoryDto);
   }
-  
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(id);

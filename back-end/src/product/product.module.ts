@@ -11,6 +11,6 @@ import { ProductSchema } from './product.schema';
   ],
   controllers: [ProductController],
   providers: [ProductService],
-  exports: [MongooseModule]
+  exports: [MongooseModule, ProductService]
 })
 export class ProductModule {}

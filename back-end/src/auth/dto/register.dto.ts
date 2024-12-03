@@ -7,10 +7,10 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  identifier: string;  // Can be email or phone number
+  identifier: string; // Can be email or phone number
 
   @IsOptional()
   @IsString()
   @MinLength(6)
-  password?: string;  // Optional (required if registering with email)
+  password?: string; // Optional (required if registering with email)
 }

@@ -1,4 +1,4 @@
 export class VerifyOtpDto {
   phone?: string;
-  otp: string; 
+  otp: string;
 }

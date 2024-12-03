@@ -3,29 +3,38 @@ import { UserDetails } from './dto/user-details.dto';
 import { UserRepository } from './user.repository';
 import { UserDocument, User } from 'src/user/user.schema';
 
-
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: UserRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  _getUserDetails(user: any): UserDetails {    
+  _getUserDetails(user: any): UserDetails {
     return {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
     };
   }
+  isValidEmail(identifier: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(identifier);
+  }
 
   async create(
     name: string,
     identifier: string,
-    options?: { hashedPassword?: string; googleId?: string; facebookId?: string },
+    options?: {
+      hashedPassword?: string;
+      googleId?: string;
+      facebookId?: string;
+    },
   ) {
     const userData: Record<string, any> = { name };
 
-    if (this.isValidEmail(identifier) && !options?.googleId && !options?.facebookId) {
+    if (
+      this.isValidEmail(identifier) &&
+      !options?.googleId &&
+      !options?.facebookId
+    ) {
       userData.email = identifier;
       if (options?.hashedPassword) {
         userData.password = options.hashedPassword;
@@ -58,11 +67,6 @@ export class UserService {
     return user;
   }
 
-  isValidEmail(identifier: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(identifier);
-  }
-
   async findByPhone(phoneNumber: string): Promise<UserDocument | null> {
     const user = await this.userRepository.findOne({ phone: phoneNumber });
     return user || null;
@@ -74,24 +78,29 @@ export class UserService {
       : this.findByPhone(identifier);
   }
 
-  async findOrCreate(userData: { email: string; name: string; googleId?: string; facebookId?: string }): Promise<UserDocument> {
+  async findOrCreate(userData: {
+    email: string;
+    name: string;
+    googleId?: string;
+    facebookId?: string;
+  }): Promise<UserDocument> {
     let user;
 
     if (userData.googleId) {
       user = await this.userRepository.findOne({ googleId: userData.googleId });
     } else if (userData.facebookId) {
-      user = await this.userRepository.findOne({ facebookId: userData.facebookId });
+      user = await this.userRepository.findOne({
+        facebookId: userData.facebookId,
+      });
     }
 
     if (!user) {
-      user = await this.create(
-      userData.name,
-      userData.email,
-      { googleId: userData.googleId, facebookId: userData.facebookId }
-      );
+      user = await this.create(userData.name, userData.email, {
+        googleId: userData.googleId,
+        facebookId: userData.facebookId,
+      });
     }
 
     return user;
   }
-  
 }

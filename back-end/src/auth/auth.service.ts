@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Twilio } from 'twilio';
 
 import * as bcrypt from 'bcryptjs';
@@ -19,35 +23,37 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
   ) {
-    this.twilioClient = new Twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+    this.twilioClient = new Twilio(
+      process.env.TWILIO_SID,
+      process.env.TWILIO_AUTH_TOKEN,
+    );
   }
 
-  
   // Sign up a new user
 
   async register(registerDto: RegisterDto) {
     const { identifier } = registerDto;
-  
+
     const isEmail = this.isValidEmail(identifier);
-  
+
     if (isEmail) {
       return this.registerByEmail(registerDto);
     } else {
       return this.registerByPhone(registerDto);
     }
   }
-  
+
   async registerByEmail(registerDto: RegisterDto) {
     const { fullName, identifier, password } = registerDto;
     const token = this.jwtService.sign({ registerDto });
     const otp = this.generateOtp();
-  
+
     await this.sendOtpByEmail(identifier, otp);
-    this.storeOtp(identifier, otp);  
-    
-    return { 
+    this.storeOtp(identifier, otp);
+
+    return {
       token,
-      message: 'OTP sent via email!'
+      message: 'OTP sent via email!',
     };
   }
 
@@ -55,16 +61,15 @@ export class AuthService {
     const { fullName, identifier } = registerDto;
     const token = this.jwtService.sign({ registerDto });
     const otp = this.generateOtp();
-    
+
     await this.sendOtpByPhone(identifier, otp);
     this.storeOtp(identifier, otp);
 
-    return { 
+    return {
       token,
-      message: 'OTP sent via phone. No password required!' 
+      message: 'OTP sent via phone. No password required!',
     };
   }
-
 
   // OTP verification handler
 
@@ -84,7 +89,7 @@ export class AuthService {
 
     // Check if the OTP has expired
     if (this.isOtpExpired(timestamp)) {
-      this.otpStore.delete(identifier); 
+      this.otpStore.delete(identifier);
       throw new BadRequestException('OTP has expired');
     }
 
@@ -92,20 +97,26 @@ export class AuthService {
     if (storedOtp !== otp) {
       throw new BadRequestException('Invalid OTP');
     }
-    
+
     let newUser;
     if (this.isValidEmail(identifier)) {
       if (!password) {
-        throw new BadRequestException('Password is required for email verification');
+        throw new BadRequestException(
+          'Password is required for email verification',
+        );
       }
       const hashedPassword = await bcrypt.hash(password, 12);
-  
+
       // Create user with email and hashed password
-      newUser = await this.userService.create(fullName, identifier, hashedPassword);
+      newUser = await this.userService.create(
+        fullName,
+        identifier,
+        hashedPassword,
+      );
     } else {
-       newUser = await this.userService.create(fullName, identifier);
+      newUser = await this.userService.create(fullName, identifier);
     }
-    this.otpStore.delete(identifier); 
+    this.otpStore.delete(identifier);
     return newUser;
   }
 
@@ -120,7 +131,7 @@ export class AuthService {
     const { otp: storedOtp, timestamp } = storedOtpData;
 
     if (this.isOtpExpired(timestamp)) {
-      this.otpStore.delete(phone); 
+      this.otpStore.delete(phone);
       throw new BadRequestException('OTP has expired');
     }
 
@@ -128,7 +139,7 @@ export class AuthService {
       throw new BadRequestException('Invalid OTP.');
     }
 
-    this.otpStore.delete(phone); 
+    this.otpStore.delete(phone);
     const user = await this.userService.findByPhone(phone);
     if (!user) {
       throw new BadRequestException('User not found.');
@@ -136,18 +147,18 @@ export class AuthService {
 
     // Generate JWT
     const token = this.jwtService.sign({
-      id: user._id,                
-      role: user.role 
+      id: user._id,
+      role: user.role,
     });
     return { token };
   }
 
   private generateOtp(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();  // Generate a 6-digit OTP
+    return Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit OTP
   }
 
   private storeOtp(identifier: string, otp: string): void {
-    const timestamp = Date.now();  
+    const timestamp = Date.now();
     this.otpStore.set(identifier, { otp, timestamp });
   }
 
@@ -173,7 +184,7 @@ export class AuthService {
     });
 
     const mailOptions = {
-      from: "HEHEHE APP",
+      from: 'HEHEHE APP',
       to: email,
       subject: 'Your OTP Code',
       text: `Your OTP code is ${otp}`,
@@ -222,8 +233,8 @@ export class AuthService {
 
     // Generate JWT
     const token = this.jwtService.sign({
-      id: user._id,                
-      role: user.role,            
+      id: user._id,
+      role: user.role,
     });
     return { token };
   }
@@ -237,18 +248,18 @@ export class AuthService {
 
     // Generate OTP and store it temporarily
     const otp = this.generateOtp();
-    await this.sendOtpByPhone(phone, otp)
+    await this.sendOtpByPhone(phone, otp);
     this.storeOtp(phone, otp);
 
     return { message: 'OTP sent to phone number.' };
   }
-  
+
   async googleLogin(req) {
     if (!req.user) {
-      return 'No user from google'
+      return 'No user from google';
     }
 
-    const payload = req.user
+    const payload = req.user;
 
     const user = await this.userService.findOrCreate({
       email: payload.email,
@@ -276,13 +287,14 @@ export class AuthService {
     const token = this.jwtService.sign({ id: user._id, role: user.role });
     return { token };
   }
-  
-  
+
   // Loging out and jwt token handler
 
   private async validateToken(token: string) {
     if (this.tokenBlacklist.has(token)) {
-        throw new UnauthorizedException('Token is invalid or has been logged out.');
+      throw new UnauthorizedException(
+        'Token is invalid or has been logged out.',
+      );
     }
   }
 
@@ -300,7 +312,7 @@ export class AuthService {
 
   async logout(token: string): Promise<{ message: string }> {
     if (token) {
-      this.tokenBlacklist.add(token); 
+      this.tokenBlacklist.add(token);
     }
     return { message: 'Logged out successfully' };
   }

@@ -1,4 +1,13 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsArray, ValidateNested, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsArray,
+  ValidateNested,
+  IsString,
+  MinLength,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 class ProductTypesDetailDto {
@@ -7,6 +16,7 @@ class ProductTypesDetailDto {
   size_name: string;
 
   @IsString()
+  @IsOptional()
   size_moreInfo?: string;
 
   @IsNotEmpty()
@@ -46,10 +56,10 @@ export class CreateProductDto {
 
   slug: string;
   @IsNotEmpty()
-  init_thumbnailURL: string; 
+  init_thumbnailURL: string;
 
   @IsNotEmpty()
-  hover_thumbnailURL: string; 
+  hover_thumbnailURL: string;
 
   @IsNotEmpty()
   @MinLength(50)
@@ -57,6 +67,9 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   categoryRef: string;
+
+  @IsNotEmpty()
+  shopRef: string;
 
   @IsNotEmpty()
   @IsArray()

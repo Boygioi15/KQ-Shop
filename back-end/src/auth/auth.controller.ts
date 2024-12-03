@@ -1,5 +1,16 @@
-import { Body, Controller, Headers, Post, UnauthorizedException, BadRequestException, Get, Request, UseGuards, Req } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport'
+import {
+  Body,
+  Controller,
+  Headers,
+  Post,
+  UnauthorizedException,
+  BadRequestException,
+  Get,
+  Request,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -18,14 +29,14 @@ export class AuthController {
   @Post('verify-otp')
   async verifyOtpSignUp(
     @Body() verifyOtpDto: VerifyOtpDto,
-    @Headers('Authorization') token: string
+    @Headers('Authorization') token: string,
   ) {
     if (!token) {
       throw new UnauthorizedException('Token is required');
     }
     return this.authService.verifyOtpSignUp(verifyOtpDto, token);
   }
-  
+
   @Post('sign-in')
   async login(@Body() loginUserDto: LoginUserDto) {
     const { identifier, password } = loginUserDto;
@@ -38,10 +49,12 @@ export class AuthController {
       }
       return this.authService.loginWithEmail(identifier, password);
     } else {
-      throw new BadRequestException('Invalid identifier. Provide email or phone number.');
+      throw new BadRequestException(
+        'Invalid identifier. Provide email or phone number.',
+      );
     }
   }
-  
+
   @Post('sign-in/verify-otp')
   async verifyOtpSignIn(@Body() verifyOtpDto: VerifyOtpDto) {
     if (!verifyOtpDto.otp) {
@@ -52,12 +65,12 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) { }
+  async googleAuth(@Req() req) {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req)
+    return this.authService.googleLogin(req);
   }
 
   @Get('facebook')
@@ -72,8 +85,8 @@ export class AuthController {
 
   @Post('logout')
   async logout(@Request() req) {
-      const token = req.headers['authorization']?.split(' ')[1];
-      return this.authService.logout(token);
+    const token = req.headers['authorization']?.split(' ')[1];
+    return this.authService.logout(token);
   }
 
   private isPhoneNumber(identifier: string): boolean {
@@ -84,9 +97,9 @@ export class AuthController {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
   }
 
-//   @Post('verify-jwt')
-//   @HttpCode(HttpStatus.OK)
-//   verifyJwt(@Body() payload: { jwt: string }) {
-//     return this.authService.verifyJwt(payload.jwt);
-//   }
+  //   @Post('verify-jwt')
+  //   @HttpCode(HttpStatus.OK)
+  //   verifyJwt(@Body() payload: { jwt: string }) {
+  //     return this.authService.verifyJwt(payload.jwt);
+  //   }
 }

@@ -1,45 +1,54 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types as MongooseTypes, ObjectId } from 'mongoose';
+import { Types } from 'twilio/lib/rest/content/v1/content';
 
 export type UserDocument = User & Document;
 
 export enum Role {
-    User = 'user',
-    Admin = 'admin',
+  User = 'user',
+  Admin = 'admin',
 }
 
-@Schema()
+@Schema({ collection: 'users' })
 export class User {
-  @Prop({ required: true }) 
+  @Prop({ required: true })
   name: string;
 
-  @Prop({ unique: true }) 
-  email: string;
-  
-  @Prop({}) 
-  password: string;
-
-  @Prop({}) 
-  phone: string;
-  
-  @Prop() 
-  image: string;
-
-  @Prop({ default: Role.User, enum: [Role.Admin, Role.User] }) 
-  role: string;
-
-  @Prop({ default: false }) 
-  isSeller: boolean;
+  @Prop()
+  thumbnailURL: string;
 
   @Prop()
-  address: string;
+  addresses: string;
 
-  @Prop({ unique: true, sparse: true }) 
+  @Prop({ required: true })
+  birthDate: Date;
+
+  @Prop({ unique: true, required: true })
+  email: string;
+
+  @Prop({ unique: true, required: true })
+  phone: string;
+
+  @Prop({ unique: true })
+  account?: string;
+
+  @Prop({ required: true })
+  password: string;
+
+  @Prop({ default: false })
+  isSeller: boolean;
+
+  @Prop({ type: MongooseTypes.ObjectId, ref: 'carts' })
+  cartRef: ObjectId;
+
+  @Prop({ unique: true, sparse: true })
   googleId?: string;
 
-  @Prop({ unique: true, sparse: true }) 
+  @Prop({ unique: true, sparse: true })
   facebookId?: string;
 
+  @Prop()
+  role: Role;
   @Prop({ default: Date.now })
   createdAt: Date;
 }
