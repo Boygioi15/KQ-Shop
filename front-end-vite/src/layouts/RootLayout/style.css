@@ -1,0 +1,17 @@
+.RootLayout{
+    display: flex;
+    flex-direction: column;
+}
+.TopNav{
+    display: flex;
+    flex-direction: column;
+}
+.TopNav_EventBanner{
+    background-color: #666666;
+}
+.TopNav_Shortcuts{
+    background-color: #999999;
+}
+.TopNav_Categories{
+    background-color: #666666;
+}

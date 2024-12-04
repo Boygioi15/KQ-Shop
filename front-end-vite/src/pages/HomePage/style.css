@@ -1,0 +1,12 @@
+.HomePage{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+.HomePage_CategoryLists{
+    border-color: black;
+}
+.HomePage_ProductDisplay{
+    border-color: gray;
+}
