@@ -1,15 +1,14 @@
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react"
+import { Outlet, Link } from 'react-router-dom'; // Import Outlet
 import './style.css'
 
 
 export default function AuthPage(){
-    const navigate = useNavigate()
-    return (
-    <div className='AuthPage'>
-        <h1>This is an auth page</h1>
-        <button onClick={()=> {navigate('/')}}>
-            <h1>Click here to get to home page</h1>
-        </button>
+    const [showOTPModal, setShowOTPModal] = useState(false);
+
+  return (
+    <div className={`AuthPage ${showOTPModal ? 'backdrop-blur-sm' : ''}`}>
+      <Outlet />
     </div>
-    )
+  );
 }
