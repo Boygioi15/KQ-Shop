@@ -15,7 +15,6 @@ import SignInForm from "./pages/AuthPage/SignIn";
 import OTPVerification from "./pages/AuthPage/OTPVerification";
 import { AuthProvider } from "./contexts/AuthContext";
 
-import './main.css'
 import SocialCallback from "./components/SocialCallback";
 
 //specified element here
