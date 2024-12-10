@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import RootLayout from "./layouts/RootLayout/RootLayout";
 import HomePage from "./pages/HomePage/Homepage";
 import AuthPage from "./pages/AuthPage/AuthPage"
@@ -9,6 +10,14 @@ import './standard-style/style.css'
 import ProductPage from "./pages/ProductPage/ProductPage";
 
 import { CartProvider } from "./contexts/CartContext";
+import SignUpForm from "./pages/AuthPage/SignUp";
+import SignInForm from "./pages/AuthPage/SignIn";
+import OTPVerification from "./pages/AuthPage/OTPVerification";
+import { AuthProvider } from "./contexts/AuthContext";
+
+import './main.css'
+import SocialCallback from "./components/SocialCallback";
+
 //specified element here
 const router = createBrowserRouter([
   {
@@ -25,6 +34,32 @@ const router = createBrowserRouter([
         element: <AuthPage />,
         children: [
           // Add child routes here if needed
+          {
+            index: true,
+            element: <SignInForm />, 
+          },
+          {
+            path: "sign-up",
+            element: <SignUpForm /> 
+          },
+          {
+            path: "verify-otp",
+            element: <OTPVerification /> 
+          },
+          {
+            path: "social-callback",
+            element: <SocialCallback /> 
+          },
+          /*
+          {
+            path: "/forgot-password",
+            element: <ForgotPasswordPage />
+          },
+          {
+            path: "/login-success",
+            element: <LoginSuccessPage />,
+          },
+          */
         ],
       },
       
@@ -40,8 +75,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CartProvider>
-      <RouterProvider router={router} /> 
+      <AuthProvider>
+        <RouterProvider router={router} /> 
+      </AuthProvider>
     </CartProvider>
-      
   </React.StrictMode>
 );

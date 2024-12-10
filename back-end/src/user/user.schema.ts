@@ -20,10 +20,10 @@ export class User {
   @Prop()
   addresses: string;
 
-  @Prop({})
+  @Prop()
   birthDate: Date;
 
-  @Prop({ unique: true})
+  @Prop({ unique: true })
   email: string;
 
   @Prop({ unique: true})
@@ -32,8 +32,8 @@ export class User {
   @Prop({ unique: true })
   account?: string;
 
-  @Prop({})
-  password: string;
+  @Prop()
+  password?: string;
 
   @Prop({ default: false })
   isSeller: boolean;
