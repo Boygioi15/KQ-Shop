@@ -71,7 +71,7 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
   const handleVerifyOtp = async () => {
     setIsSubmitting(true);
     const verifyOtpDto = isLogin ? { otp: otp.join(''), phone } : { otp: otp.join('') };
-    const url = isLogin ? 'http://localhost:8000/api/auth/sign-in/verify-otp' : 'http://localhost:8000/api/auth/register/verify-otp';
+    const url = isLogin ? 'http://localhost:8000/api/auth/sign-in/verify-otp' : 'http://localhost:8000/api/auth/verify-otp';
     const headers = isLogin ? { 'Content-Type': 'application/json',} : { 'Content-Type': 'application/json', 'Authorization': token };
 
     try {
@@ -84,6 +84,7 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
       if (response.ok) {
         const data = response.json();
         const newToken = data.token;
+        console.log(newToken)
         signIn(newToken);
         setShowOTPModal(false);
         navigate('/');

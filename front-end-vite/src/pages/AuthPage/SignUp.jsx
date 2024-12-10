@@ -118,11 +118,16 @@ export default function SignUpForm() {
     const fullName = e.target.fullName.value; 
     let identifier = isPhoneForm ? selectedCountryCode + phone : email;
 
-    const registerDto = {
-      fullName: fullName,
-      identifier: identifier,
-      password: password, 
-    };
+    const registerDto = isPhoneForm
+      ? {
+          fullName: fullName,
+          identifier: identifier,
+        }
+      : {
+          fullName: fullName,
+          identifier: identifier,
+          password: password,
+        };
 
     setRegisterDto(registerDto);
 
@@ -169,7 +174,7 @@ export default function SignUpForm() {
         </p>
       </div>
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4" onSubmit={handleSubmit} disabled={loading}>
         <Input
           name="fullName"
           type="text"
@@ -249,7 +254,7 @@ export default function SignUpForm() {
               />
           </div>
           {errors.phone && (
-              <p className="text-sm text-red-500">{errors.phone}</p>
+            <p className="text-sm text-red-500">{errors.phone}</p>
           )}
           </>
         )}
@@ -303,12 +308,12 @@ export default function SignUpForm() {
           {!isPhoneForm ? (
                 <>
                 <FaPhone className="mr-2" />
-                Tiếp tục với số điện thoại
+                Đăng ký với số điện thoại
                 </>
             ) : (
                 <>
                 <span className="text-xl w-5">@</span>
-                Tiếp tục với Email
+                Đăng ký với Email
                 </>
             )}
         </Button>
