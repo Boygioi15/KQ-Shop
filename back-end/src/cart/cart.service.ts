@@ -18,6 +18,7 @@ export class CartService {
   ) {}
   async createAnonymous() {
     const newCart = new this.cartModel();
+    console.log(newCart)
     newCart.expireDate = new Date(Date.now() + 10*1000);
     return await newCart.save();
   }

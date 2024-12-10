@@ -1,0 +1,107 @@
+.wrapper{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+
+    display: flex;
+    justify-content: safe  center;
+    align-items: safe  center;
+    overflow-y: auto;
+}
+.ProductModal{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: 50px;
+    gap: 10px;
+    width: 1000px;
+    background-color: white;
+}
+.ProductModal .closeButton{
+    position: absolute;
+    right: 30px; 
+    top: 30px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ProductModal .closeButton:hover{
+    background-color: var(--hover-indicator);
+    cursor: pointer;
+}
+.ProductModal .closeButton:active{
+    background-color: var(--click-indicator);
+}
+.ProductModal .colorDisplay{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.ProductModal .imageDisplay img{
+    width: 400px;
+    height: auto;
+}
+.ProductModal .description{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.ProductModal .description{
+    text-align: left;
+}
+.ProductModal .description .price{
+    padding: 5px 0px;
+}
+.ProductModal .colorSelection{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0px
+}
+.ProductModal .colorSelection .text{
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:10px;
+}
+.ProductModal .colorSelection .arrayOfImage{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:10px;
+}
+
+.ProductModal .sizeSelection{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0px
+}
+.ProductModal .sizeSelection .text{
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:10px;
+}
+.ProductModal .sizeSelection .text{
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:10px;
+}
+.ProductModal .sizeSelection .arrayOfSize{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap:10px;
+}
+
+.ProductModal .addToCartAndFavorite button{
+    width: 100%;
+}

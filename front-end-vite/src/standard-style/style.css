@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  box-sizing: border-box;
+}
+*{
+  box-sizing: border-box;
+}
+/*
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+GLOBAL VARIABLE SECTION
+*/
+@font-face {
+  font-family: "Small";
+  src: url(../assets/font/static/Inter_18pt-Medium.ttf) format("truetype");
+  font-style: normal;
+}
+@font-face {
+  font-family: "Thin";
+  src: url(../assets/font/static/Inter_24pt-Thin.ttf) format("truetype");
+  font-style: normal;
+}
+@font-face {
+  font-family: "Normal";
+  src: url(../assets/font/static/Inter_24pt-Medium.ttf) format("truetype");
+  font-style: normal;
+}
+@font-face {
+  font-family: "Title";
+  src: url(../assets/font/static/Inter_28pt-Bold.ttf) format("truetype");
+  font-style: normal;
+}
+@font-face {
+  font-family: "WebTitle";
+  src: url(../assets/font/static/Inter_28pt-Bold.ttf) format("truetype");
+  
+}
+h1{
+  font-family: "Normal";
+}
+.big-icon{
+  font-size: 20px;
+  border-radius: 10px;
+  padding: 2px;
+  width: 30px;
+  height: 30px;
+}
+.shortcut-icon{
+  color: var(--ghosted-color);
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+}
+
+
+.event-banner-font{
+  font-family: "Normal" ;
+  font-size: 16px;
+}
+.search-font{
+  font-family: "Normal" ;
+  font-size: 16px;
+}
+.brief-product-name-font{
+  font-family: "Normal" ;
+  font-size: 16px;
+}
+.brief-product-shop-font{
+  font-family: "Normal" ;
+  font-size: 16px;
+  color: var(--ghosted-color)
+}
+.brief-product-price-font{
+  font-family: "Normal" ;
+  font-size: 16px;
+  color: var(--shocked-price-color)
+}
+.modal-product-name-font{
+  font-family: "Title";
+  font-size: 20px;
+}
+.modal-product-normal-font{
+  font-family: "Normal";
+  font-size: 20px;
+}
+.modal-product-price-font{
+  font-family: "Title";
+  font-size: 20px;
+  color: var(--shocked-price-color)
+}
+.small-font{
+  font-family: "Normal";
+  font-size: 14px;
+  color: var(--ghosted-color);
+}
+.standard-button-1{
+  border-radius: 0px;
+  background-color: black;
+  color: white;
+  font-family: "Normal";
+  font-size: 24px;
+  padding: 10px;
+}
+.standard-button-1:hover{
+  background-color: rgb(50,50,50);
+  cursor: pointer;
+  
+}
+.nav-link{
+  font-family: "Normal";
+  font-size: 20px;
+  text-decoration: underline;
+  color: #1560EB;
+}
+.nav-link:hover{
+  color: #014CD7;
+}
+.nav-link:active{
+  color: #0138C3;
+}
+:root {
+  --primary-color: #6FDD00;
+  --ghosted-color: #666666;
+  --link-init-color: #0E88F0;
+  --link-hover-color: #1892FA;
+  --link-click-color: #229CFF;
+  --disabled-color: #C3C3C3;
+  --enabled-color: #068932;
+  --button-hover-color: #10933C;
+  --hover-indicator: rgb(200,200,200); /* 50% opacity */
+  --click-indicator: rgb(150,150,150);
+
+  --shocked-price-color: #FA6338;
+  --event-banner-bg-color: #B80D1E;
+}

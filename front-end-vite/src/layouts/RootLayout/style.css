@@ -1,17 +1,142 @@
-.RootLayout{
-    display: flex;
-    flex-direction: column;
+.on-hover1:hover{
+    background-color: #C21728;
+    cursor: pointer;
 }
+
+
 .TopNav{
     display: flex;
-    flex-direction: column;
+    align-items: center;
 }
-.TopNav_EventBanner{
-    background-color: #666666;
+.TopNav_EventBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--event-banner-bg-color); 
+    color: white;
+    gap: 10px; /* Space between text and button */
+    padding: 5px 20px;
+    height: 40px;
+  }
+.EventBanner_Description{
+    font-family: "Normal";
 }
-.TopNav_Shortcuts{
-    background-color: #999999;
+.EventBanner_Description1{
+    margin: 0 auto; /* Push the <p> to the center */
 }
-.TopNav_Categories{
-    background-color: #666666;
+.EventBanner_Button {
+    font-family: "Normal";
+    background-color: #12283E;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.EventBanner_Button:hover {
+    color: var(--primary-color)
+}
+
+.TopNav_Shortcut{
+    display: flex;
+
+    color: black;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 40px;
+    
+}
+.TopNav_Shortcut:hover{
+    cursor: pointer;
+    
+}
+.Shortcut_left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+}
+.Shortcut_Homepage{
+    font-family: "WebTitle";
+    font-size: 28px;
+    display: inline-block;
+}
+.Shortcut_NormatCategoryShortcut{
+    font-family:"Title";
+    display: inline-block;
+    padding-top: 3px;
+    
+}
+.Shortcut_DropdownCategoryShortcut{
+    font-family:"Title";
+    display: inline-flex;
+    gap: 5px;
+    flex-direction: row;
+    justify-content: center; /* Centers items horizontally */
+    align-items: center; /* Centers items vertically */
+    padding-top: 3px;
+}
+.Shortcut_right{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+}
+
+.Shortcut_Icon{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    font-size: 18px;
+    font-family: "Normal";
+    color: var(--ghosted-color)    
+}
+.Shortcut_Icon:hover{
+    cursor: pointer;
+}
+
+
+
+.Shortcut_QuickSearchBar {
+    display: grid; /* Use Grid layout */
+    grid-template-columns: 1fr 40px; /* Two columns: one flexible, one fixed */
+}   
+
+.Shortcut_QuickSearchBar .Shortcut_Text{
+    width: 350px;
+    position: relative;
+    display: flex;
+    align-items: center; /* Vertically center items */
+}
+.Shortcut_QuickSearchBar input{
+    width: 350px;
+    height: 100%;
+    padding: 5px 10px;
+    border-radius: 2px;
+    border-color: var(--ghosted-color);
+    border-width: 1px;
+    font-family : "Normal";
+    color: black;
+}
+.Shortcut_QuickSearchBar .Shortcut_Text .innerCancel{
+    position: absolute;
+    right: 5px;
+}
+.Shortcut_QuickSearchBar .Shortcut_Search {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    text-align: center;
+
+    background-color: black;
+    color: white;
+    font-size: 24px;
+    width: 40px;
+    height: 100%;
+}
+.Shortcut_QuickSearchBar .Shortcut_Search:hover {
+    background-color: rgb(50,50,50);
+    cursor: pointer;
 }

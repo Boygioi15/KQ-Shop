@@ -1,0 +1,43 @@
+.BriefProductCard{
+    position: relative;
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+}
+.BriefProductCard img{
+    width: 260px;
+    height: 340px;
+}
+.BriefProductCard img:hover{
+    cursor: pointer;
+}
+.BriefProductCard .briefDescription{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 5px;
+}
+.BriefProductCard .addToCart{
+    position: absolute;
+    display: flex;  
+    align-items: center;
+    justify-items: center;
+    font-size: 20px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    background-color: white;
+    border-width: 2px;
+    bottom: 0px;
+    right: 0px;
+}
+.BriefProductCard .addToCart:hover{
+    background-color: rgb(200,200,200);
+    cursor: pointer;
+}
+.BriefProductCard .addToCart:active{
+    background-color: rgb(180,180,180);
+}
+.name{
+    max-height: 40px;
+    overflow: hidden;
+}

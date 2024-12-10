@@ -1,0 +1,27 @@
+.RatingAndReview{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    font-family: "Normal";
+    font-size: 14px;
+    align-items: center;
+}
+.RatingAndReview .arrayOfStar{
+    color: gold;
+    font-size: 20px;
+}
+.RatingAndReview .left{
+    display: flex;
+    gap: 5px;
+}
+.RatingAndReview .temp{
+    padding-top:3px;
+}
+.RatingAndReview .right{
+    padding-top:3px;
+}
+.RatingAndReview div{
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+}
