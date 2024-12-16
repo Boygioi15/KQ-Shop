@@ -2,11 +2,17 @@
     background-color: white;
     display: flex;
     flex-direction: column;
-    align-content: center;
+    text-align: center;
+    padding: 20px  80px ;
 }
 .HomePage_CategoryLists{
     border-color: black;
 }
 .HomePage_ProductDisplay{
-    border-color: gray;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 30px;
+    justify-content: center;
 }

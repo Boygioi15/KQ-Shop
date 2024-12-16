@@ -20,7 +20,19 @@ export class ProductController {
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
-
+  @Get('brief')
+  findAll_Brief(){
+    return this.productService.findAll_Brief();
+  }
+  @Get('brief/search/:content')
+  findAll_Search_Brief(@Param('content') content: string){
+    return this.productService.findAll_Search_Brief(content);
+  }
+  @Get('modal/:id')
+  findOne_Modal(@Param('id') id: string){
+    return this.productService.findOne_Modal(id);
+  }
+  
   @Get()
   findAll() {
     return this.productService.findAll();

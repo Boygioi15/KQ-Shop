@@ -23,7 +23,9 @@ export class ShopService {
   async findOne(id: string) {
     return await this.shopModel.findById(id);
   }
-
+  async getShopName(id: string){
+    return (await this.findOne(id)).name;
+  }
   async update(id: string, updateShopDto: UpdateShopDto) {
     return await this.shopModel.findByIdAndUpdate(id, updateShopDto, {
       new: true,

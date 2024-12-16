@@ -43,9 +43,9 @@ export class Product {
   slug: string;
 
   @Prop()
-  init_ThumnbnailURL: string;
+  init_ThumbnailURL: string;
   @Prop()
-  hover_ThumnbnailURL: string;
+  hover_ThumbnailURL: string;
 
   @Prop({ required: true })
   description: string;

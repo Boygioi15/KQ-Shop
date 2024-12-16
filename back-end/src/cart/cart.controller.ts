@@ -17,7 +17,7 @@ import { SelectCartItemsByShopDto } from './dto/select-cart-items-by-shop.dto';
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @Post()
+  @Post('/anonymous')
   createAnonymous() {
     return this.cartService.createAnonymous();
   }

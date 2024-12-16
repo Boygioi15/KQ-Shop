@@ -20,20 +20,20 @@ export class User {
   @Prop()
   addresses: string;
 
-  @Prop({ required: true })
+  @Prop()
   birthDate: Date;
 
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true })
   email: string;
 
-  @Prop({ unique: true, required: true })
+  @Prop({ unique: true})
   phone: string;
 
   @Prop({ unique: true })
   account?: string;
 
-  @Prop({ required: true })
-  password: string;
+  @Prop()
+  password?: string;
 
   @Prop({ default: false })
   isSeller: boolean;

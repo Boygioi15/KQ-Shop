@@ -1,0 +1,32 @@
+.SmallPictureCard{
+    width: 70px;
+    height: 90px;
+    display: flex;  
+    align-items: center;
+    justify-content: center;    
+    padding: 5px;
+
+    background-color: white;
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+}
+.SmallPictureCard img{
+    width: 70px;
+    height: 90px;
+}
+.SmallPictureCard:hover{
+    border-color: black;
+}
+.SmallPictureCard:hover img{
+    width: 60px;
+    height: 80px;
+}
+
+.SmallPictureCard-selected{
+    border-color: black;
+}
+.SmallPictureCard-selected img{
+    width: 60px;
+    height: 80px;
+}

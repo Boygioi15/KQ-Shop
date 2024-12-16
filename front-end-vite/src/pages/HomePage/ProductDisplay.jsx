@@ -1,3 +1,39 @@
+import { useState, useEffect } from "react";
+import BriefProductCard from "../../reusable-components/BriefProductCard/BriefProductCard"
+import axios from "axios"
 export function ProductDisplay(){
-    return <div className="HomePage_ProductDisplay"> <h1>This is a product display</h1></div>
-}
+    const [briefProductList, setBriefProductList] = useState([]);
+    useEffect(() => {
+        // Function to fetch events from the backend
+        const fetchBriefProductList = async () => {
+          try {
+            const response = await axios.get('http://localhost:8000/api/product/brief');
+            setBriefProductList(response.data); // Assigning the fetched list of events to the state
+          } catch (error) {
+            console.error('Error fetching events:', error);
+          }
+        };
+    
+        fetchBriefProductList();
+      }, []); 
+
+      return (
+        <div className="HomePage_ProductDisplay"> 
+          {briefProductList.length > 0 ? (
+            briefProductList.map(({ id, name, price, shop, initImgURL, hoverImgURL }) => (
+              <BriefProductCard 
+                key={id} 
+                id={id} 
+                name={name} 
+                shop={shop}
+                price={price} 
+                initImgURL={initImgURL} 
+                hoverImgURL={hoverImgURL} 
+              />
+            ))
+          ) : (
+            <h1>There is no product to display</h1>
+          )}
+        </div>
+      );
+    }      

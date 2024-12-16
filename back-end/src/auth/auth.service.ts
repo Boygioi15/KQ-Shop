@@ -111,13 +111,17 @@ export class AuthService {
       newUser = await this.userService.create(
         fullName,
         identifier,
-        hashedPassword,
+        { hashedPassword }
       );
     } else {
       newUser = await this.userService.create(fullName, identifier);
     }
     this.otpStore.delete(identifier);
-    return newUser;
+    const token_1 = this.jwtService.sign({
+      id: newUser._id,
+      role: newUser.role,
+    });
+    return { token_1 };
   }
 
   async verifyOtpSignIn(verifyOtpDto: VerifyOtpDto) {

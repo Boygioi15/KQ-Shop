@@ -9,9 +9,10 @@ import {
   Request,
   UseGuards,
   Req,
+  Res
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
@@ -69,8 +70,10 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req);
+  async googleAuthRedirect(@Req() req, @Res() res: Response) {
+    const token = await this.authService.googleLogin(req);
+    const tokenString = typeof token === 'string' ? token : token.token;
+    res.redirect(`http://localhost:5173/auth/social-callback?token=${encodeURIComponent(tokenString)}`);
   }
 
   @Get('facebook')
@@ -79,8 +82,11 @@ export class AuthController {
 
   @Get('facebook/callback')
   @UseGuards(AuthGuard('facebook'))
-  async facebookAuthRedirect(@Req() req) {
-    return this.authService.facebookLogin(req);
+  async facebookAuthRedirect(@Req() req, @Res() res: Response) {
+    const token = await this.authService.facebookLogin(req);
+    console.log(token)
+    const tokenString = typeof token === 'string' ? token : token.token;
+    res.redirect(`http://localhost:5173/auth/social-callback?token=${encodeURIComponent(tokenString)}`);
   }
 
   @Post('logout')

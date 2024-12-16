@@ -1,0 +1,18 @@
+.SizeChooseBox{
+    padding: 5px 25px;
+    border-radius: 20px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--ghosted-color);
+    background-color: white;
+}
+.SizeChooseBox:hover{
+    background-color: var(--hover-indicator);
+}
+.SizeChooseBox:active{
+    background-color: var(--click-indicator);
+}
+.SizeChooseBox-selected{
+    border-width: 3px;
+    border-color: black;
+}

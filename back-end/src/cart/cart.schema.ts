@@ -17,7 +17,7 @@ export class CartItem {
     this.product_type_detailRef = new Types.ObjectId(productTypeDetailID)
     this.quantity = quantity     
   }
-  @Prop({ type: Types.ObjectId, unique: true, auto: true})
+  @Prop({ type: Types.ObjectId, auto: true})
   _id: Types.ObjectId;
   @Prop({ type: Types.ObjectId, ref: 'products', required: true })
   productRef: Types.ObjectId;
@@ -33,7 +33,7 @@ export class CartItem {
 
 @Schema({ collection: 'carts' })
 export class Cart {
-  @Prop({ type: [CartItem], default: [] })
+  @Prop({ type: [CartItem], default: undefined })
   items: CartItem[];
   @Prop({ type: Date, default: Date.now, expireAfterSeconds: 20 }) // TTL Index
   expireDate?: Date; // Field for expiry time
