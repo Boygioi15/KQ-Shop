@@ -6,7 +6,6 @@ import { FaPhone, FaFacebook } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Link } from "react-router-dom";
 import OTPVerification from "./OTPVerification";
-import "../../assets/tailwind.css"
 
 const EMAIL_DOMAINS = [
   'gmail.com',

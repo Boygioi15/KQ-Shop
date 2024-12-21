@@ -14,7 +14,8 @@ import SignUpForm from "./pages/AuthPage/SignUp";
 import SignInForm from "./pages/AuthPage/SignIn";
 import OTPVerification from "./pages/AuthPage/OTPVerification";
 import { AuthProvider } from "./contexts/AuthContext";
-
+import OrderPage from "./pages/PaymentPage/OrderPage";
+import SuccessPage from "./pages/PaymentPage/SuccessPage";
 import SocialCallback from "./components/SocialCallback";
 
 //specified element here
@@ -61,11 +62,23 @@ const router = createBrowserRouter([
           */
         ],
       },
-      
       {
         path: "products/:search",
         element: <ProductPage />
-      }
+      },
+      {
+        path: "payment",
+        children: [
+          {
+            index: true,
+            element: <OrderPage />, 
+          },
+          {
+            path: "success",
+            element: <SuccessPage />,
+          },
+        ],
+      },
         
     ],
   },
