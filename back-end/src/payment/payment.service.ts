@@ -13,6 +13,8 @@ export class PaymentService {
   }
 
   async createPaymentLink(paymentData: any): Promise<any> {
+    console.log('payOSInstance', payOSInstance); 
+
     const body = {
       orderCode: Number(String(Date.now()).slice(-6)),
       amount: paymentData.amount || 2000,

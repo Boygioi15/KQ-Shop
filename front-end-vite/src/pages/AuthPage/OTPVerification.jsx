@@ -2,7 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { X } from 'lucide-react'
 import { Button } from '../../components/Button'
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
+
+import {ErrorModal, SuccessModal} from "../../reusable-components/Modal/Modal";
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function OTPVerification({ setShowOTPModal, token, registerDto, phone, isLogin }) {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
@@ -11,6 +14,13 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRefs = useRef([])
   const { signIn } = useAuth();
+
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [Resend_isSuccessModalOpen, setResend_isSuccessModalOpen] = useState(false);
+  const [Verify_isSuccessModalOpen, setVerify_isSuccessModalOpen] = useState(false);
+
+  const {showLoading, hideLoading} = useLoading();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +53,7 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
   const handleResend = async () => {
     setIsResending(true);
     try {
+      showLoading();
       const response = await fetch('http://localhost:8000/api/auth/sign-up', {
         method: 'POST',
         headers: {
@@ -52,15 +63,22 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
       });
 
       if (response.ok) {
-        console.log('OTP resent successfully');
-        setTimeLeft(56); // Reset the countdown timer
+        setOtp(['', '', '', '', '', '']);
+        setResend_isSuccessModalOpen(true);
+        setTimeLeft(60); // Reset the countdown timer
       } else {
-        console.error('Failed to resend OTP');
+        const errorData = await response.json();
+        setErrors(errorData.errors); 
+        setErrorMessage("Gửi lại OTP thất bại. " + errorData.message);
+        setIsErrorModalOpen(true);
+        
       }
     } catch (error) {
-      console.error('Error resending OTP:', error);
+      setErrorMessage("Gửi lại OTP thất bại. " + errorData.message);
+        setIsErrorModalOpen(true);
     } finally {
       setIsResending(false);
+      hideLoading();
     }
   };
 
@@ -75,6 +93,7 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
     const headers = isLogin ? { 'Content-Type': 'application/json',} : { 'Content-Type': 'application/json', 'Authorization': token };
 
     try {
+      showLoading();
       const response = await fetch(url, {
         method: 'POST',
         headers: headers,
@@ -82,19 +101,23 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
       });
 
       if (response.ok) {
-        const data = response.json();
-        const newToken = data.token;
-        console.log(newToken)
+        const data = await response.json();
+        const newToken = data.token_1;
         signIn(newToken);
-        setShowOTPModal(false);
-        navigate('/');
+        setVerify_isSuccessModalOpen(true);
+        
       } else {
-        console.error('OTP verification failed');
+        setErrorMessage('Xác thực OTP thất bại!. Mã OTP không khớp ');
+        setIsErrorModalOpen(true);
+        console.error('Xác thực OTP thất bại');
       }
     } catch (error) {
-      console.error('Error verifying OTP:', error);
+      const errorData = await response.json();
+      setErrorMessage('Xác thực OTP thất bại!. Lỗi: ', errorData);
+      setIsErrorModalOpen(true);
     } finally {
       setIsSubmitting(false);
+      hideLoading();
     }
   };
 
@@ -158,6 +181,27 @@ export default function OTPVerification({ setShowOTPModal, token, registerDto, p
       <p className="text-center text-xs text-gray-500 mt-4">
           Tiếp tục, bạn sẽ đồng ý <a href="#" className="text-blue-500">Chính sách bảo mật</a> & <a href="#" className="text-blue-500">Cookie</a> và <a href="#" className="text-blue-500">Điều khoản</a> và <a href="#" className="text-blue-500">Điều kiện</a> của chúng tôi.
       </p>
+
+      <ErrorModal 
+        isOpen={isErrorModalOpen} 
+        onClose={() => setIsErrorModalOpen(false)} 
+        message={errorMessage} 
+      />
+      <SuccessModal 
+        isOpen={Resend_isSuccessModalOpen} 
+        onClose={() => setResend_isSuccessModalOpen(false)} 
+        message={"Gửi lại mã OTP thành công! Vui lòng kiểm tra tin nhắn của bạn."} 
+      />
+      <SuccessModal 
+        isOpen={Verify_isSuccessModalOpen} 
+        onClose={() => {
+          setVerify_isSuccessModalOpen(false)
+          setShowOTPModal(false);
+          navigate('/')
+        }
+        } 
+        message={"Đăng kí tài khoản thành công"} 
+      />
     </div>
   )
 }

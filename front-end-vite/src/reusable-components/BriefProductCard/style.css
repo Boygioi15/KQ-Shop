@@ -38,6 +38,6 @@
     background-color: rgb(180,180,180);
 }
 .name{
-    max-height: 40px;
+    max-height: 50px;
     overflow: hidden;
 }

@@ -35,22 +35,23 @@ export class AuthService {
     const { identifier } = registerDto;
 
     const isEmail = this.isValidEmail(identifier);
-
     if (isEmail) {
       return this.registerByEmail(registerDto);
     } else {
       return this.registerByPhone(registerDto);
     }
   }
-
+  //check if user exist or not
   async registerByEmail(registerDto: RegisterDto) {
     const { fullName, identifier, password } = registerDto;
+    if(await this.userService.checkEmailExist(identifier)){
+      throw new BadRequestException('Email đã tồn tại');
+    }
     const token = this.jwtService.sign({ registerDto });
     const otp = this.generateOtp();
 
     await this.sendOtpByEmail(identifier, otp);
     this.storeOtp(identifier, otp);
-
     return {
       token,
       message: 'OTP sent via email!',
@@ -59,6 +60,9 @@ export class AuthService {
 
   async registerByPhone(registerDto: RegisterDto) {
     const { fullName, identifier } = registerDto;
+    if(await this.userService.checkPhoneExist(identifier)){
+      throw new BadRequestException('Số điện thoại đã tồn tại');
+    }
     const token = this.jwtService.sign({ registerDto });
     const otp = this.generateOtp();
 
@@ -116,10 +120,10 @@ export class AuthService {
     } else {
       newUser = await this.userService.create(fullName, identifier);
     }
+    console.log("New user id: " + newUser._id);
     this.otpStore.delete(identifier);
     const token_1 = this.jwtService.sign({
-      id: newUser._id,
-      role: newUser.role,
+      _id: newUser._id,
     });
     return { token_1 };
   }
@@ -151,8 +155,7 @@ export class AuthService {
 
     // Generate JWT
     const token = this.jwtService.sign({
-      id: user._id,
-      role: user.role,
+      _id: user._id,
     });
     return { token };
   }
@@ -234,11 +237,8 @@ export class AuthService {
     if (!doesPasswordMatch) {
       throw new BadRequestException('Invalid email or password.');
     }
-
-    // Generate JWT
     const token = this.jwtService.sign({
       id: user._id,
-      role: user.role,
     });
     return { token };
   }

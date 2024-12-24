@@ -17,11 +17,23 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { LoginUserDto } from './dto/login.dto';
+import { UserService } from 'src/user/user.service';
+import { JwtGuard } from './guards/jwt.guard';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
 
+  @Get('user-detail')
+  @UseGuards(JwtGuard)
+  async getUserDetail(@Request() req) {
+    console.log("Auth header: ", req.headers.authorization)
+    console.log("ID "+JSON.stringify(req.user))
+    return await this.userService.getUserDetail(req.user._id);
+  }
   @Post('sign-up')
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);

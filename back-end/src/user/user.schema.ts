@@ -18,18 +18,21 @@ export class User {
   thumbnailURL: string;
 
   @Prop()
+  thumbnail_PublicID: string;
+
+  @Prop()
   addresses: string;
 
   @Prop()
   birthDate: Date;
 
-  @Prop({ unique: true })
-  email: string;
+  @Prop({ unique: true, sparse: true })
+  email?: string;
 
-  @Prop({ unique: true})
-  phone: string;
+  @Prop({ unique: true, sparse: true})
+  phone?: string;
 
-  @Prop({ unique: true })
+  @Prop({ unique: true, sparse: true })
   account?: string;
 
   @Prop()

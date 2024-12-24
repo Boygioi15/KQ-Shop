@@ -37,7 +37,6 @@ export const CartProvider = ({ children }) => {
 
   // Fetch cart details when cartID is available
   useEffect(() => {
-    console.log("HI")
     if (!cartID) {
       requestNewAnonymousCart();
     }

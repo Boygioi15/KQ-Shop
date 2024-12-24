@@ -1,24 +1,43 @@
 import { Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
+
 import { UserDetails } from './dto/user-details.dto';
 import { UserRepository } from './user.repository';
 import { UserDocument, User } from 'src/user/user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { UpdateUserInfoDTO } from './dto/update-user-info.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository ,
+    private readonly cloudinaryService: CloudinaryService,
+    @InjectModel(User.name) private userModel: Model<UserDocument>
+  ) {}
 
   _getUserDetails(user: any): UserDetails {
     return {
-      id: user._id.toString(),
+      _id: user._id.toString(),
       name: user.name,
       email: user.email,
     };
+  }
+  async getUserDetail(userID: string){
+    return await this.userModel.findById(userID).select(`-password`)
   }
   isValidEmail(identifier: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(identifier);
   }
-
+  async update(id: string, updateUserInfo: UpdateUserInfoDTO){
+    const oldUser = await this.userModel.findById(id);
+    const updatedUser =  await this.userModel.findByIdAndUpdate(id,updateUserInfo,{new: true})
+    if(updateUserInfo.thumbnailURL){
+      await this.cloudinaryService.destroyFile(oldUser.thumbnail_PublicID);
+    }
+    return updatedUser;
+  }
   async create(
     name: string,
     identifier: string,
@@ -102,5 +121,13 @@ export class UserService {
     }
 
     return user;
+  }
+  async checkEmailExist(email: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({ email });
+    return !!user;
+  }
+  async checkPhoneExist(phone: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({ phone });
+    return !!user;
   }
 }
