@@ -238,7 +238,7 @@ export class AuthService {
       throw new BadRequestException('Invalid email or password.');
     }
     const token = this.jwtService.sign({
-      id: user._id,
+      _id: user._id,
     });
     return { token };
   }
@@ -271,7 +271,7 @@ export class AuthService {
       googleId: payload.id,
     });
 
-    const token = this.jwtService.sign({ id: user._id, role: user.role });
+    const token = this.jwtService.sign({ _id: user._id});
     return { token };
   }
 
@@ -288,7 +288,7 @@ export class AuthService {
       facebookId: payload.id,
     });
 
-    const token = this.jwtService.sign({ id: user._id, role: user.role });
+    const token = this.jwtService.sign({ _id: user._id});
     return { token };
   }
 
@@ -306,10 +306,10 @@ export class AuthService {
     await this.validateToken(oldToken); // Ensure the old token is valid and not blacklisted
 
     const decodedToken = this.jwtService.verify(oldToken);
-    const { id, role } = decodedToken;
+    const { _id } = decodedToken;
 
     // Generate a new token with the same payload
-    const newToken = this.jwtService.sign({ id: id, role: role });
+    const newToken = this.jwtService.sign({ _id: _id});
 
     return { newToken };
   }

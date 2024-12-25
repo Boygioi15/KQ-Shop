@@ -8,7 +8,9 @@ import { MdCancel } from "react-icons/md";
 import axios from 'axios'
 import './style.css'
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 export default function TopNav(){
+    
     return (
         <div>
             <EventBanner />
@@ -86,6 +88,9 @@ function EventBanner(){
 }
 function Shortcut(){
     const navigate = useNavigate();
+    const {signInNotification, signOut} = useAuth();
+    useEffect(()=>{console.log("HI")},[signInNotification])
+    const token = localStorage.getItem('token')
     return(
         <div className = "TopNav_Shortcut">
             <span onClick={()=>navigate('/')} className='Shortcut_Homepage'>KQ-Shop</span>
@@ -95,10 +100,34 @@ function Shortcut(){
                   initIcon={<FaShoppingCart  className='ShortcutIcon'/>}
                   number={5}
                 />
-                <IconShortcut 
-                  initIcon={<FaRegUser className='ShortcutIcon' />}
-                  action={()=>navigate("/auth/sign-up")}
-                />
+                
+                <div className="sc_dropdown" style={{position:"relative"}}>
+                    <IconShortcut 
+                            initIcon={<FaRegUser style={{color: token&& "black"}}className='ShortcutIcon' />}
+                            action={()=>{
+                                if(!token){
+                                    navigate("/auth/sign-up")
+                                }
+                                else{
+                                    navigate("/user-space")
+                                }
+                                }
+                            }
+                    />
+                    {token && <div className="Login_Dropdown">
+                        <label onClick={()=>{
+                            navigate('/user-space/account')
+                        }
+                        } 
+                        className="abc_label">Tài khoản</label>
+                        <label onClick={()=>{
+                            signOut() 
+                            navigate('/auth')
+                        }
+                        } 
+                        className="abc_label">Đăng xuất</label>
+                    </div>}
+                </div>               
                 <IconShortcut 
                   initIcon={<FaRegHeart className='ShortcutIcon'/>}
                   number={3}
@@ -107,6 +136,7 @@ function Shortcut(){
                   initIcon={<IoIosHelpCircleOutline className='ShortcutIcon'/>}
                 />
             </div>
+            
         </div>
     )
 }

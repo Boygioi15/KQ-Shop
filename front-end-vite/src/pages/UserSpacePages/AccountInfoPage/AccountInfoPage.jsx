@@ -6,13 +6,21 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { useLoading } from "../../../contexts/LoadingContext";
+
+import validator from "validator";
+
 export default function AccountInfoPage(){
     const {showLoading, hideLoading} = useLoading();
     const navigate = useNavigate();
-    const {userDetail, fetchUserDetail} = useAuth();
+    const {userDetail, fetchUserDetail, signOut} = useAuth();
     const [Verify_isErrorModalOpen, setVerify_isErrorModalOpen] = useState(false); 
+    
     const [Update_isErrorModalOpen, setUpdate_isErrorModalOpen] = useState(false); 
-    const [Update_isSuccessModalOpen, setUpdate_isSuccessModalOpen] = useState(false); 
+    const [Update_isSuccessModalOpen, setUpdate_isSuccessModalOpen] = useState(false);
+    
+    const [Validate_isErrorModalOpen, setValidate_isErrorModalOpen] = useState(false); 
+    const [Validate_errorMsg, setValidate_errorMsg] = useState(""); 
+
     const [formData, setFormData] = useState({
         account: (userDetail && userDetail.account) || "",
         name: (userDetail && userDetail.name) || "",
@@ -33,6 +41,7 @@ export default function AccountInfoPage(){
 
         if (!userDetail) {
             fetchUserDetail().catch((error) => {
+                signOut();
                 setVerify_isErrorModalOpen(true);
             });
         }
@@ -41,7 +50,25 @@ export default function AccountInfoPage(){
         }
     }, [userDetail]);
 
+    const validateForm = () =>{
+        if(formData.email &&  formData.email!=="" && !validator.isEmail(formData.email)){
+            setValidate_errorMsg("Định dạng email không hợp lệ")
+            setValidate_isErrorModalOpen(true);
+            return false;
+        }
+
+        const phoneRegex = /^\d{10}$/;
+        if (formData.phone && formData.phone!=="" && !phoneRegex.test(formData.phone)) {
+            setValidate_errorMsg("Định dạng số điện thoại không hợp lệ")
+            setValidate_isErrorModalOpen(true);
+            return false;
+        }
+        return true;
+    }
     const handleSubmit = async () =>{
+        if(!validateForm()){
+            return;
+        }
         const data = new FormData();
         for (const [key, value] of Object.entries(formData)) {
             data.append(key, value);
@@ -50,7 +77,7 @@ export default function AccountInfoPage(){
 
         try {
             showLoading();
-            const response = await axios.patch('http://localhost:8000/api/user',data,
+            const response = await axios.patch('http://localhost:8000/api/user/info',data,
               {headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
               },
@@ -183,6 +210,13 @@ export default function AccountInfoPage(){
                 </div>
                 
             </div>
+            <ErrorModal 
+                isOpen={Validate_isErrorModalOpen} 
+                onClose={() => {
+                    setValidate_isErrorModalOpen(false)
+                }} 
+                message={Validate_errorMsg} 
+            />
             <ErrorModal 
                 isOpen={Verify_isErrorModalOpen} 
                 onClose={() => {

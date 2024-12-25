@@ -1,22 +1,59 @@
-.User-space-layout{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;   
+
+.USL-wrapper{
+    height: 100vh;
     background-color: #f5f5f5; 
+}
+.User-space-layout{
+    display: grid;
+    grid-template-columns: 280px 980px;
+    justify-content: center;   
+    
     padding: 20px;
+    gap: 20px;
 }
 .User-space-layout .tabs{
     display: flex;
     flex-direction: column;
-    width: 200px;
-}
+    padding: 20px;
+    
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
+}
+.User-space-layout .tabs > div{
+    padding: 5px;
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+}
 .User-space-layout .TabParent{
+    position: relative;
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.User-space-layout .TabParent .row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    gap: 5px;
+    cursor: pointer;
 }
 .TabParent .children{
     display: flex;
     flex-direction: column;
     padding-left: 20px;
+    gap: 10px
+}
+.User-tab-not-selected{
+    color: rgb(100,100,100);
+}
+.User-tab-selected{
+    color: black;
+}
+.TabLeaf{
+    font-size: 16px;
 }

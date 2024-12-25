@@ -1,15 +1,20 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLoading } from './LoadingContext';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const {showLoading, hideLoading} = useLoading();
   const [userDetail, setUserDetail] = useState(null);
+  const [signInNotification, setSignInNotification] = useState(false);
   // Update the context state and persist to localStorage
   const signIn = (newToken) => {
     localStorage.setItem('token', newToken);
+    setSignInNotification(true);
   };
   const signOut = () => {
     localStorage.removeItem('token');
+    setSignInNotification(false);    
   };
   const fetchUserDetail = async () => {
     const token = localStorage.getItem('token');
@@ -17,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       throw new Error('Không có token');
     }
     try {
+      showLoading()
       const response = await fetch('http://localhost:8000/api/auth/user-detail', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -36,9 +42,12 @@ export const AuthProvider = ({ children }) => {
           throw new Error(error.response.data.msg);
       }
     }
+    finally{
+      hideLoading()
+    }
   };
   return (
-    <AuthContext.Provider value={{signIn, signOut, userDetail, fetchUserDetail}}>
+    <AuthContext.Provider value={{signIn, signOut, userDetail, fetchUserDetail, signInNotification}}>
       {children}
     </AuthContext.Provider>
   );

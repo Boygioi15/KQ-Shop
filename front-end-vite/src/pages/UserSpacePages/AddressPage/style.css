@@ -1,0 +1,99 @@
+
+.AddressPage .title{
+    display: flex;
+    align-items: center;
+    font-weight: lighter;
+    position: relative;
+}
+.AddressPage .title button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+
+    position: absolute;
+    right: 0px;
+}
+.AddressPage .info{
+    display: flex;
+    flex-direction: column;
+}
+.AddressPage .content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: scroll;
+}
+.addressList{
+    display: flex;
+    flex-direction: column;
+    gap:10px; 
+}
+.AddressPage .AddressBlock{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.AddressPage .defaultBlock{
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;    
+    text-align: center;
+    width: 100px;
+}
+.AddressPage .operation{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0px;
+    text-align: end;
+    gap: 2px
+}
+.AddressPage .operation button{
+    border-color: rgb(50,50,50);
+    background-color: rgb(252,252,252);
+    border-radius: 0px;
+    border-width: 1px;
+    border-style: solid;
+    padding: 0px 5px;
+}
+.AddressPage .operation button:disabled{
+    opacity: 0.5;
+}
+
+
+
+
+.AddressModal{
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.AddressModal .form{
+    display: grid;  
+    grid-template-columns:  200px  200px; /* Set fixed widths for label and input */
+    gap: 20px; /* Add spacing between rows */
+    align-items: center; /* Vertically align labels and inputs */
+}
+.form textarea{
+    height: 100px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-width: 1px;
+    border-color: #D1D5D8;
+}
+.AddressModal .operation{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: end;
+}

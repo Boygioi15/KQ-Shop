@@ -22,6 +22,8 @@ import SocialCallback from "./components/SocialCallback";
 import "./standard-style/normalCss.css"
 import AccountInfoPage from "./pages/UserSpacePages/AccountInfoPage/AccountInfoPage";
 import { LoadingProvider } from "./contexts/LoadingContext";
+import ChangePasswordPage from "./pages/UserSpacePages/ChangePasswordPage/ChangePasswordPage";
+import AddressPage from "./pages/UserSpacePages/AddressPage/AddressPage";
 //specified element here
 const router = createBrowserRouter([
   {
@@ -73,6 +75,14 @@ const router = createBrowserRouter([
           {
             path: "account",
             element: <AccountInfoPage />
+          },
+          {
+            path: "password",
+            element: <ChangePasswordPage />
+          },
+          {
+            path:"address",
+            element: <AddressPage />
           }
         ]
       },
