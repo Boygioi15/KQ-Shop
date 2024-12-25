@@ -11,6 +11,7 @@ import { CartModule } from './cart/cart.module';
 import { ShopModule } from './shop/shop.module';
 import { EventModule } from './event/event.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { LoggerMiddleware } from './logger/logger.middleware';
     CartModule,
     ShopModule,
     EventModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
