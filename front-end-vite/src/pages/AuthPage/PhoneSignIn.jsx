@@ -3,7 +3,6 @@ import { Button } from "../../components/Button"
 import { useState } from "react"
 import { FaFacebook } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import "../../assets/tailwind.css"
 
 
 export default function PhoneSignUpForm() {

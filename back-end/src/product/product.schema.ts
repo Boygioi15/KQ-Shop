@@ -58,8 +58,6 @@ export class Product {
   
   @Prop({ type: [Product_Types], required: true })
   types: Product_Types[]; // Each type will have its own _id
-  @Prop({ type: Types.ObjectId, ref: 'reviews' })
-  reviewsRef: Types.ObjectId;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

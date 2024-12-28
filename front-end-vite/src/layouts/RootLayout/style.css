@@ -140,3 +140,26 @@
     background-color: rgb(50,50,50);
     cursor: pointer;
 }
+.sc_dropdown{
+    display: inline-block;
+}
+.Login_Dropdown{
+    position: absolute;
+    width: 120px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    background-color: white;
+}
+.sc_dropdown:hover .Login_Dropdown{
+    display: flex;
+}
+.abc_label{
+    padding: 5px;
+}
+.abc_label:hover{
+    cursor: pointer;
+    background-color: #0969DA;
+    color: white;
+}

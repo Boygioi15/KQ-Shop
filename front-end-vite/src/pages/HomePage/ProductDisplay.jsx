@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import BriefProductCard from "../../reusable-components/BriefProductCard/BriefProductCard"
 import axios from "axios"
+import { useLoading } from "../../contexts/LoadingContext";
 export function ProductDisplay(){
     const [briefProductList, setBriefProductList] = useState([]);
+    const {showLoading, hideLoading} = useLoading();
     useEffect(() => {
         // Function to fetch events from the backend
         const fetchBriefProductList = async () => {
           try {
+            showLoading();
             const response = await axios.get('http://localhost:8000/api/product/brief');
             setBriefProductList(response.data); // Assigning the fetched list of events to the state
           } catch (error) {
             console.error('Error fetching events:', error);
+          }
+          finally{
+            hideLoading();
           }
         };
     

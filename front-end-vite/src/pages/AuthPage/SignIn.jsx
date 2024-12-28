@@ -7,7 +7,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from '../../contexts/AuthContext';
 import OTPVerification from "./OTPVerification";
-import "../../assets/tailwind.css"
+import { useLoading } from "../../contexts/LoadingContext";
 
 const EMAIL_DOMAINS = [
   'gmail.com',
@@ -29,6 +29,8 @@ export default function SignInForm() {
   const [isLogin, setIsLogin] = useState(false);
   const [showOTPModal, setShowOTPModal] = useState(false);
   const { signIn } = useAuth();
+
+  const {showLoading, hideLoading} = useLoading();
   const navigate = useNavigate();
   
   const countryCodes = [
@@ -126,6 +128,7 @@ export default function SignInForm() {
     
     try {
       setLoading(true);
+      showLoading();
       const response = await fetch('http://localhost:8000/api/auth/sign-in', {
         method: 'POST',
         headers: {
@@ -154,6 +157,7 @@ export default function SignInForm() {
       console.error('Error during sign-up:', error);
     } finally {
       setLoading(false);
+      hideLoading();
     }
   };
 

@@ -5,8 +5,10 @@ import { LockIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 import { FaPhone, FaFacebook } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Link } from "react-router-dom";
+
+import {ErrorModal, SuccessModal} from "../../reusable-components/Modal/Modal";
 import OTPVerification from "./OTPVerification";
-import "../../assets/tailwind.css"
+import { useLoading } from "../../contexts/LoadingContext";
 
 const EMAIL_DOMAINS = [
   'gmail.com',
@@ -29,6 +31,11 @@ export default function SignUpForm() {
   const [registerDto, setRegisterDto] = useState(null);
   const [loading, setLoading] = useState(false);
   
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [messageFromServer, setMessageFromServer] = useState("");
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+  const {showLoading, hideLoading} = useLoading();
   const countryCodes = [
     { code: "+84", country: "VN" },
     { code: "+1", country: "US" },
@@ -132,6 +139,7 @@ export default function SignUpForm() {
     setRegisterDto(registerDto);
 
     try {
+      showLoading();
       const response = await fetch('http://localhost:8000/api/auth/sign-up', {
         method: 'POST',
         headers: {
@@ -147,9 +155,15 @@ export default function SignUpForm() {
       } else {
         const errorData = await response.json();
         setErrors(errorData.errors); 
+        setMessageFromServer(errorData.message + ". Vui lòng thử lại");
+        setIsErrorModalOpen(true);
+        
       }
     } catch (error) {
       console.error('Error during sign-up:', error);
+    }
+    finally{
+      hideLoading();
     }
   };
 
@@ -189,7 +203,7 @@ export default function SignUpForm() {
                       placeholder="Địa chỉ email"
                       value={email}
                       onChange={handleEmailChange} />
-                  {errors.email && (
+                  {errors && errors.email && (
                       <p className="text-sm text-red-500">{errors.email}</p>
                   )}
                   {showSuggestions && (
@@ -227,7 +241,7 @@ export default function SignUpForm() {
                       )}
                   </button>
               </div>
-              {errors.password && (
+              {errors && errors.password && (
                   <p className="text-sm text-red-500">{errors.password}</p>
               )}
           </>
@@ -253,7 +267,7 @@ export default function SignUpForm() {
                   onChange={handlePhoneChange}
               />
           </div>
-          {errors.phone && (
+          {errors && errors.phone && (
             <p className="text-sm text-red-500">{errors.phone}</p>
           )}
           </>
@@ -338,6 +352,12 @@ export default function SignUpForm() {
       <p className="text-center text-xs text-gray-500 mt-6">
           Tiếp tục, bạn sẽ đồng ý <a href="#" className="text-blue-500">Chính sách bảo mật</a> & <a href="#" className="text-blue-500">Cookie</a> và <a href="#" className="text-blue-500">Điều khoản</a> và <a href="#" className="text-blue-500">Điều kiện</a> của chúng tôi.
       </p>
+
+      <ErrorModal 
+        isOpen={isErrorModalOpen} 
+        onClose={() => setIsErrorModalOpen(false)} 
+        message={"Đăng kí thất bại: "+ messageFromServer} 
+      />
     </div>
   )
 }
