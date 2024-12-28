@@ -42,7 +42,7 @@ export default function BriefProductCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={() => {
-        navigate(`/product/${id}`);
+        navigate(`/product-detail/${id}`);
       }}
       />
       <div className="briefDescription">

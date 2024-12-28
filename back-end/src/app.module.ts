@@ -12,6 +12,8 @@ import { ShopModule } from './shop/shop.module';
 import { EventModule } from './event/event.module';
 import { LoggerMiddleware } from './logger/logger.middleware';
 import { PaymentModule } from './payment/payment.module';
+import { ReviewModule } from './review/review.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { PaymentModule } from './payment/payment.module';
     ShopModule,
     EventModule,
     PaymentModule,
+    ReviewModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

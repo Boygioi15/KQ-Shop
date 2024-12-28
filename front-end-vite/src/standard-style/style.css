@@ -97,6 +97,33 @@ h1{
   font-size: 14px;
   color: var(--ghosted-color);
 }
+
+.address-block-name-font{
+  font-family: "Normal" ;
+  font-size: 16px;
+  font-weight: lighter;
+}
+.address-block-phone-font{
+  font-family: "Normal" ;
+  font-size: 16px;
+  color: var(--ghosted-color);
+  font-weight: 100;
+}
+.cancel-button{
+  border-radius: 5px;
+  background-color: rgb(235,235,235);
+  color: rgb(50,50,50);
+  font-family: "Normal";
+  font-size: 16px;
+  padding: 5px 15px;
+  height: 40px;
+}
+.cancel-button:hover{
+  background-color: rgb(215,215,215);
+}
+.cancel-button:active{
+  background-color: rgb(195,195,195);
+}
 .standard-button-1{
   border-radius: 0px;
   background-color: black;
@@ -105,10 +132,22 @@ h1{
   font-size: 24px;
   padding: 10px;
 }
+.standard-button-2{
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  font-family: "Normal";
+  font-size: 16px;
+  padding: 5px 15px;
+  height: 40px;
+}
+.standard-button-2:hover{
+  background-color: rgb(50,50,50);
+  cursor: pointer;
+}
 .standard-button-1:hover{
   background-color: rgb(50,50,50);
   cursor: pointer;
-  
 }
 .nav-link{
   font-family: "Normal";

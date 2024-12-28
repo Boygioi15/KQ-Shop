@@ -9,6 +9,23 @@ export enum Role {
   Admin = 'admin',
 }
 
+@Schema()
+class Address{
+  @Prop({ type: MongooseTypes.ObjectId, auto: true, unique: true, required: true })
+  _id: MongooseTypes.ObjectId;
+  
+  @Prop({required: true})
+  receiverName: String;
+
+  @Prop({required: true})
+  receiverPhone: String;
+
+  @Prop({required: true})
+  receiverAddress: String;
+
+  @Prop({required: true})
+  default: boolean;
+}
 @Schema({ collection: 'users' })
 export class User {
   @Prop({ required: true })
@@ -18,18 +35,21 @@ export class User {
   thumbnailURL: string;
 
   @Prop()
-  addresses: string;
+  thumbnail_PublicID: string;
+
+  @Prop({type: [Address], default: []})
+  addresses: Address[];
 
   @Prop()
   birthDate: Date;
 
-  @Prop({ unique: true })
-  email: string;
+  @Prop({ unique: true, sparse: true })
+  email?: string;
 
-  @Prop({ unique: true})
-  phone: string;
+  @Prop({ unique: true, sparse: true})
+  phone?: string;
 
-  @Prop({ unique: true })
+  @Prop({ unique: true, sparse: true })
   account?: string;
 
   @Prop()
