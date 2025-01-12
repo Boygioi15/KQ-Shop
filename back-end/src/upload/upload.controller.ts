@@ -7,27 +7,17 @@ import {
     HttpStatus,
   } from '@nestjs/common';
   import { FileInterceptor } from '@nestjs/platform-express';
-  import { diskStorage } from 'multer';
-  import { extname } from 'path';
-  import * as fs from 'fs';
+  import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+  import { memoryStorage } from 'multer';
   
   @Controller('api/upload/product')
   export class UploadController {
+    constructor(private readonly cloudinaryService: CloudinaryService) {}
+
     @Post('thumb')
     @UseInterceptors(
       FileInterceptor('image', {
-        storage: diskStorage({
-          destination: (req, file, callback) => {
-            const uploadPath = './uploads/product/thumb';
-            fs.mkdirSync(uploadPath, { recursive: true });
-            callback(null, uploadPath);
-          },
-          filename: (req, file, callback) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-            const fileExtName = extname(file.originalname);
-            callback(null, `${uniqueSuffix}${fileExtName}`);
-          },
-        }),
+        storage: memoryStorage(),
         fileFilter: (req, file, callback) => {
           if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
             return callback(
@@ -51,14 +41,22 @@ import {
         );
       }
   
-      const imageUrl = `http://localhost:8000/uploads/product/thumb/${file.filename}`;
-  
-      return {
-        success: true,
-        message: 'Image uploaded successfully.',
-        data: {
-          imageUrl,
-        },
-      };
+      try {
+        const result = await this.cloudinaryService.uploadFile(file);
+        return {
+          success: true,
+          message: 'Image uploaded successfully.',
+          data: {
+            imageUrl: result.secure_url, 
+            publicId: result.public_id,  
+          },
+        };
+      } catch (error) {
+        console.error('Cloudinary Upload Error:', error);
+        throw new HttpException(
+          'Failed to upload image to Cloudinary.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }

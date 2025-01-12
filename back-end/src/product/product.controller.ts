@@ -32,10 +32,10 @@ export class ProductController {
   findOne_Modal(@Param('id') id: string){
     return this.productService.findOne_Modal(id);
   }
-  
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query('isPublished') isPublished?: string) {
+    const isPublishedBool = isPublished ? isPublished === 'true' : undefined;
+    return this.productService.findAll(isPublishedBool);
   }
   @Get()
   findAllProductWithCategoryID(@Query('categoryID') categoryID: string) {

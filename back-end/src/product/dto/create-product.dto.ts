@@ -73,7 +73,13 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsArray()
-  @ValidateNested({ each: true }) // Validate each element in the array as a ProductTypesDto
+  @ValidateNested({ each: true }) 
   @Type(() => ProductTypesDto)
   types: ProductTypesDto[];
+
+  @IsNotEmpty()
+  attributes: Record<string, string>;
+
+  @IsNotEmpty()
+  isPublished: boolean;
 }

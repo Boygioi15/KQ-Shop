@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/payment': 'http://localhost:8000', 
-    }
+    },
+    port: 5500
   }
 })

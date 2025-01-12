@@ -2,24 +2,30 @@ import React, { useEffect, useState } from "react";
 import AddSPUInfo from "../../../component/admin/addProduct/AddSPUInfo";
 import AddVariationsInfo from "../../../component/admin/addProduct/AddVariationsInfo";
 import AddAttributesInfo from "../../../component/admin/addProduct/AddAttributesInfo";
-import { getProduct, createNewProduct } from "../../../config/api";
+import { getProduct, createNewProduct, getCategoryIdByName } from "../../../config/api";
 import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
+
+const initialProductData = {
+  name: "",
+  init_thumbnailURL: "",
+  hover_thumbnailURL: "",
+  description: "", 
+  attributes: [], 
+  category: "",
+  shopRef: "674dac7725636fc3269ebe99", // Must be set appropriately
+  variations: [], 
+  sku_list: [], 
+  types: [],
+  types_ImageURL: [],
+  isPublished: true,
+}
 
 const AddProductPage = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [productData, setProductData] = useState({
-    name: "",
-    category: [], // Lưu giá trị category
-    description: "",
-    tags: [],
-    thumb: null,
-    variations: [],
-    sku_list: [],
-    attributes: [],
-  });
+  const [productData, setProductData] = useState(initialProductData);
 
-  
 
   // Hàm xử lý thay đổi chung cho input
   const handleChange = (e) => {
@@ -29,6 +35,55 @@ const AddProductPage = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const transformToTypes = () => {
+    const { variations, sku_list } = productData;
+    const types = [];
+
+    // Find the index of "Màu sắc" variation
+    const colorVariation = variations.find(v => v.name === "Màu sắc");
+    const sizeVariation = variations.find(v => v.name === "Kích thước");
+
+    if (!colorVariation || !sizeVariation) {
+      console.error("Both 'Màu sắc' and 'Kích thước' variations are required.");
+      return [];
+    }
+
+    colorVariation.options.forEach((color, colorIndex) => {
+      // Placeholder for color images, modify as needed
+      const color_ImageURL = productData.types_ImageURL[colorIndex] || [];
+
+      const type = {
+        _id: uuidv4(),
+        color_name: color,
+        color_ImageURL: color_ImageURL, // Update accordingly
+        details: [],
+      };
+
+      sizeVariation.options.forEach((size, sizeIndex) => {
+        // Find the corresponding SKU
+        const sku = sku_list.find(
+          skuItem =>
+            skuItem.sku_index[0] === colorIndex &&
+            skuItem.sku_index[1] === sizeIndex
+        );
+
+        if (sku) {
+          type.details.push({
+            _id: uuidv4(),
+            size_name: size,
+            price: sku.sku_price,
+            sold: 0, 
+            inStorage: parseInt(sku.sku_stock) || 0,
+          });
+        }
+      });
+
+      types.push(type);
+    });
+
+    return types;
   };
 
   // Hàm xử lý khi `attributes` thay đổi
@@ -61,21 +116,53 @@ const AddProductPage = () => {
       handleGetProduct(id).finally(() => setIsLoading(false)); // Tắt loading
     }
   }, [id]);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Thêm logic submit dữ liệu lên server tại đây
-    console.log("Submitting product data:", productData);
-  };
+
   const handleCreateNew = async (productData) => {
-    console.log("🚀 ~ handleCreateNew ~ productData:", productData);
+    const removeIdsFromTypes = (types) => {
+      return types.map(({ _id, details, ...type }) => ({
+        ...type,
+        details: details.map(({ _id, ...detail }) => ({
+          ...detail,
+        })),
+      }));
+    };
+
+    // Transform attributes
+    const transformedAttributes = productData.attributes.reduce((acc, attr) => {
+      if (attr.name && attr.value) {
+        acc[attr.name] = attr.value.trim();
+      }
+      return acc;
+    }, {});
+
+    // Rename category to categoryRef
+
+    const types = removeIdsFromTypes(transformToTypes());
+    const categoryResponse = await getCategoryIdByName(productData.category);
+    const categoryId = categoryResponse.data.id;
+
+    const payload = {
+      ...productData,
+      types: types,
+      attributes: transformedAttributes,
+      categoryRef: categoryId,
+
+      // Remove unnecessary fields
+      category:undefined,
+      variations: undefined,
+      sku_list: undefined,
+      types_ImageURL: undefined,
+    };
+
     try {
       // Gọi API để tạo sản phẩm mới
-      const response = await createNewProduct(productData);
+      const response = await createNewProduct(payload);
       console.log("🚀 ~ handleCreateNew ~ response:", response);
 
-      if (response && response.success) {
-        console.log("Sản phẩm đã được tạo thành công:", response);
+      if (response.status === 201) {
         alert("Sản phẩm đã được tạo thành công!");
+        window.location.reload();
+        setProductData(initialProductData);
       }
     } catch (error) {
       console.error("Lỗi khi tạo sản phẩm:", error.message);
@@ -85,26 +172,73 @@ const AddProductPage = () => {
     }
   };
 
+  // useEffect(() => {
+  //   // Fetch and set shopRef appropriately, e.g., from user context or API
+  //   const fetchShopRef = async () => {
+  //     // Example: Assume you have a function to get the logged-in shop's ID
+  //     const shopId = await getLoggedInShopId(); // Implement this function
+  //     setProductData((prevData) => ({
+  //       ...prevData,
+  //       shopRef: shopId,
+  //     }));
+  //   };
+
+  //   fetchShopRef();
+  // }, []);
+
   const handleGetProduct = async (spu_id) => {
     try {
       const response = await getProduct(spu_id);
       if (response && response.metadata) {
         const product = response.metadata;
         console.log("🚀 ~ handleGetProduct ~ product:", product);
-
+  
         const spu_info = product.spu_info;
         const sku_list = product.sku_list;
-
+  
+        // Map fetched types to the new types structure
+        const mappedTypes = (product.types || []).map((type) => ({
+          color_name: type.color_name || "",
+          color_ImageURL: type.color_ImageURL || [],
+          details: (type.details || []).map((detail) => ({
+            size_name: detail.size_name || "",
+            size_moreInfo: detail.size_moreInfo || "",
+            price: detail.price || 0,
+            sold: detail.sold || 0,
+            inStorage: detail.inStorage || 0,
+            sku: detail.sku || "",
+          })),
+        }));
+  
         setProductData({
           ...productData,
           name: spu_info.product_name || "",
           category: product.product_category || "",
           description: spu_info.product_description || "",
-          tags: spu_info.product_tags || [],
-          thumb: spu_info.product_thumb || null,
+          init_thumbnailURL: spu_info.product_thumb || "",
+          hover_thumbnailURL: spu_info.product_hover_thumb || "",
+          // Updated 'details' from string to key-value pairs
+          details: spu_info.product_details || {},
           variations: spu_info.product_variations || [],
           sku_list: sku_list || [],
           attributes: spu_info.product_attributes || [],
+          // Set 'types' with the mapped structure
+          types: mappedTypes.length > 0 ? mappedTypes : [
+            {
+              color_name: "",
+              color_ImageURL: [],
+              details: [
+                {
+                  size_name: "",
+                  size_moreInfo: "",
+                  price: 0,
+                  sold: 0,
+                  inStorage: 0,
+                  sku: "",
+                },
+              ],
+            },
+          ],
         });
       }
     } catch (error) {
@@ -122,7 +256,6 @@ const AddProductPage = () => {
             productData={productData}
             handleChange={handleChange}
             setProductData={setProductData}
-            handleSubmit={handleSubmit}
           />
 
           <div className="mt-10">
@@ -135,7 +268,7 @@ const AddProductPage = () => {
 
           <div className="mt-10">
             <AddAttributesInfo
-              category={productData.category}
+              details={productData.attributes}
               productData={productData}
               onUpdateAttributes={handleUpdateAttributes} // Truyền callback cho attributes
             />
@@ -144,6 +277,7 @@ const AddProductPage = () => {
             <button
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
               onClick={() => handleCreateNew(productData)}
+              // onClick={() => console.log(productData)}
             >
               Tạo mới
             </button>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import VariationForm from "./VariationForm";
 import SkuTable from "./SkuTable";
 import { formatNumber, parseNumber } from "../../../utils/format";
+import { getImageLink } from "../../../config/api";
 
 const AddVariationsInfo = ({
   productData,
@@ -13,6 +14,7 @@ const AddVariationsInfo = ({
     { id: 2, name: "Kích thước", options: [] },
   ]);
   const [sku_list, setSku_list] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
   const [price, setPrice] = useState(""); // Giá cho tất cả các SKU
   const [stock, setStock] = useState(""); // Kho cho tất cả các SKU
 
@@ -93,16 +95,43 @@ const AddVariationsInfo = ({
     setSkuListAndUpdate(updatedSkuList);
   };
 
-  const handleImageUpload = (skuIndexId, event) => {
+  const handleImageUpload = async (skuIndexId, event) => {
     const updatedSkuList = [...sku_list];
-    const files = Array.from(event.target.files); // Chuyển đổi FileList thành mảng
+    const files = Array.from(event.target.files); // Convert FileList to array
 
-    updatedSkuList[skuIndexId].sku_imgs = [
-      ...updatedSkuList[skuIndexId].sku_imgs,
-      ...files,
-    ];
+    if (files.length === 0) return; // No files selected
 
-    setSku_list(updatedSkuList);
+    setIsUploading(true); // Start uploading
+
+    try {
+      const uploadedImageUrls = await Promise.all(
+        files.map(async (file) => {
+          const formData = new FormData();
+          formData.append("image", file);
+
+          const response = await getImageLink(formData);
+          
+          if (response && response.imageUrl) {
+            return response.imageUrl;
+          } else {
+            throw new Error("Failed to upload image");
+          }
+        })
+      );
+
+      updatedSkuList[skuIndexId].sku_imgs = [
+        ...updatedSkuList[skuIndexId].sku_imgs,
+        ...uploadedImageUrls,
+      ];
+
+      setSku_list(updatedSkuList);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      alert("Đã xảy ra lỗi khi tải lên hình ảnh. Vui lòng thử lại.");
+    } finally {
+      setIsUploading(false); // End uploading
+      event.target.value = null; // Reset the input
+    }
   };
 
   const handleRemoveImage = (skuIndexId, imgIndex) => {

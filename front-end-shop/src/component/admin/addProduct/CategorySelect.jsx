@@ -13,8 +13,9 @@ const CategorySelect = ({ productData, handleChange }) => {
     try {
         const categories = await getAllCategory();
         console.log("🚀 ~ getCategory ~ categories:", categories);
-        if (Array.isArray(categories)) {
-            const mappedCategories = categories.map((category) => ({
+        const categories_data = categories.data;
+        if (Array.isArray(categories_data)) {
+            const mappedCategories = categories_data.map((category) => ({
                 id: category._id,
                 name: category.name,
             }));
@@ -32,7 +33,7 @@ const CategorySelect = ({ productData, handleChange }) => {
         htmlFor="category"
         className="block text-gray-700 font-medium mb-2"
       >
-        Category
+        Danh mục
       </label>
       <select
         id="category"
@@ -41,13 +42,12 @@ const CategorySelect = ({ productData, handleChange }) => {
         onChange={handleChange}
         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        <option value="">Chọn category</option>
+        <option value="">Chọn danh mục</option>
         {categoryList.map((category, index) => (
           <option key={index} value={category.name}>
             {category.name}
           </option>
         ))}
-        <option value="Khác">Khác</option>
       </select>
 
       {productData.category === "Khác" && (

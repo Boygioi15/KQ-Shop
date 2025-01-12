@@ -25,11 +25,16 @@ export class ProductService {
     if (createProductDto.name) {
       createProductDto.slug = slugify(createProductDto.name);
     }
-    const newProduct = new this.productModel(createProductDto);
-    newProduct.types.forEach((element) => {
-      element._id = new Types.ObjectId();
-      element.details.forEach((element1) => {
-        element1._id = new Types.ObjectId();
+
+    const newProduct = new this.productModel({
+      ...createProductDto,
+      details: createProductDto.attributes, 
+    });
+
+    newProduct.types.forEach((type) => {
+      type._id = new Types.ObjectId();
+      type.details.forEach((detail) => {
+        detail._id = new Types.ObjectId();
       });
     });
     return await newProduct.save();
@@ -87,8 +92,11 @@ export class ProductService {
       })
     );
   }
-  async findAll() {
-    return await this.productModel.find();
+  async findAll(isPublished?: boolean) {
+    if (isPublished === undefined) {
+      return await this.productModel.find();
+    }
+    return await this.productModel.find({ isPublished: isPublished });
   }
 
   async findOne(id: string) {
