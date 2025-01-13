@@ -38,10 +38,13 @@ export class UserService {
   }
   async updateInfo(id: string, updateUserInfo: UpdateUserInfoDTO){
     const oldUser = await this.userModel.findById(id);
+    //console.log("Checkmark 3")
     const updatedUser =  await this.userModel.findByIdAndUpdate(id,updateUserInfo,{new: true})
-    if(updateUserInfo.thumbnailURL){
+    //console.log("Checkmark 4")
+    if(updateUserInfo.thumbnailURL && oldUser.thumbnail_PublicID){
       await this.cloudinaryService.destroyFile(oldUser.thumbnail_PublicID);
     }
+    //console.log("Checkmark 5")
     return updatedUser;
   }
   async updatePassword(id: string, updateUserPassword: UpdateUserPasswordDTO){
@@ -88,7 +91,6 @@ export class UserService {
 
     // Create the user
     const newUser = await this.userRepository.create(userData);
-
     return this._getUserDetails(newUser);
   }
 
@@ -161,6 +163,7 @@ export class UserService {
 
   //////////////////////ADDRESSeS???????????????????
   async addNewAddressOfUser(userID: string, addNewAddressDTO : AddNewAddressDTO){
+    console.log("Check point 1")
     const user = await this.userModel.findById(userID);
     addNewAddressDTO._id = new Types.ObjectId();
     if(user.addresses.length===0){
@@ -170,7 +173,9 @@ export class UserService {
       addNewAddressDTO.default=false;
     }
     user.addresses.push(addNewAddressDTO)
+    console.log("Check point 2")
     await user.save()
+    console.log("Check point 3")
     return user.addresses;
   }
   async getAllAddressOfUser(userID: string){

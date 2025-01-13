@@ -8,8 +8,9 @@ export const AuthProvider = ({ children }) => {
   const [userDetail, setUserDetail] = useState(null);
   const [signInNotification, setSignInNotification] = useState(false);
   // Update the context state and persist to localStorage
-  const signIn = (newToken) => {
+  const signIn = async (newToken) => {
     localStorage.setItem('token', newToken);
+    await fetchUserDetail();
     setSignInNotification(true);
   };
   const signOut = () => {

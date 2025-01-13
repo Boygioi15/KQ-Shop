@@ -17,7 +17,7 @@ export default function AccountInfoPage(){
     
     const [Update_isErrorModalOpen, setUpdate_isErrorModalOpen] = useState(false); 
     const [Update_isSuccessModalOpen, setUpdate_isSuccessModalOpen] = useState(false);
-    
+    const [Update_Message, setUpdate_Message] = useState("");
     const [Validate_isErrorModalOpen, setValidate_isErrorModalOpen] = useState(false); 
     const [Validate_errorMsg, setValidate_errorMsg] = useState(""); 
 
@@ -33,7 +33,7 @@ export default function AccountInfoPage(){
         thumbnailFile: null,
 
     }) 
-    useEffect(()=>{console.log("Form data: " + JSON.stringify(formData)),[formData]})
+    //useEffect(()=>{console.log("Form data: " + JSON.stringify(formData)),[formData]})
     useEffect(() => {
         if (!localStorage.getItem('token')) {
             setVerify_isErrorModalOpen(true);
@@ -45,9 +45,21 @@ export default function AccountInfoPage(){
                 setVerify_isErrorModalOpen(true);
             });
         }
-        if(userDetail){
-            setFormData(userDetail)
+        if (userDetail) {
+            setFormData({
+                account: (userDetail && userDetail.account) || null,
+                name: (userDetail && userDetail.name) || null,
+                email: (userDetail && userDetail.email) || null,
+                phone: (userDetail && userDetail.phone) || null,
+                gender: (userDetail && userDetail.gender) || null,
+                birthDate: (userDetail && userDetail.birthDate) || null,
+        
+                thumbnailURL: (userDetail && userDetail.thumbnailURL || null),
+                thumbnailFile: null,
+            });
         }
+          
+          
     }, [userDetail]);
 
     const validateForm = () =>{
@@ -71,10 +83,10 @@ export default function AccountInfoPage(){
         }
         const data = new FormData();
         for (const [key, value] of Object.entries(formData)) {
-            data.append(key, value);
+            if(value){
+                data.append(key, value);
+            } 
         }
-
-
         try {
             showLoading();
             const response = await axios.patch('http://localhost:8000/api/user/info',data,
@@ -83,6 +95,11 @@ export default function AccountInfoPage(){
               },
             });
             fetchUserDetail();
+            if(formData.email!=="" || formData.phone!==""){
+                setUpdate_Message("Cập nhật thông tin người dùng thành công");
+            }else{
+                setUpdate_Message("Cập nhật thông tin người dùng thành công! Vui lòng kiểm tra lại email và số điện thoại");
+            }
             setUpdate_isSuccessModalOpen(true);
           }catch (error) {
             console.log(error);
@@ -149,10 +166,11 @@ export default function AccountInfoPage(){
                         <label>Giới tính</label>
                         <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:"20px"}}>
                             <div style={{display:"flex",flexDirection:"row",alignItems:"center",gap:"5px"}}>
-                                <input className="RadioInput" type="radio" id="nam" name="gender" value="Nam" 
+                                <input className="RadioInput" type="radio" id="nam" name="gender" value="Nam"  
                                 onChange={(e) =>
                                     setFormData((prev) => ({ ...prev, gender: e.target.value }))
                                 } 
+                                checked={formData.gender === "Nam"}
                                 />
                                 <label htmlFor="nam">Nam</label>
                             </div>
@@ -161,6 +179,7 @@ export default function AccountInfoPage(){
                                 onChange={(e) =>
                                     setFormData((prev) => ({ ...prev, gender: e.target.value }))
                                 } 
+                                checked={formData.gender === "Nữ"}
                                 />
                                 <label htmlFor="nu">Nữ</label>
                             </div>
@@ -168,7 +187,8 @@ export default function AccountInfoPage(){
                                 <input className="RadioInput" type="radio" id="khac" name="gender" value="Khác"
                                 onChange={(e) =>
                                     setFormData((prev) => ({ ...prev, gender: e.target.value }))
-                                }  
+                                } 
+                                checked={formData.gender === "Khác"} 
                                 />
                                 <label htmlFor="khac">Khác</label>
                             </div>          
@@ -176,7 +196,7 @@ export default function AccountInfoPage(){
                         <label>Ngày sinh</label>
                         <input
                             type="date"
-                            value={formData.birthDate}
+                            value={formData.birthDate ? formData.birthDate.split("T")[0] : ""}
                             onChange={(e) =>
                                 setFormData((prev) => ({ ...prev, birthDate: e.target.value }))
                             }
@@ -237,7 +257,7 @@ export default function AccountInfoPage(){
                 onClose={() => {
                     setUpdate_isSuccessModalOpen(false)
                 }} 
-                message={"Cập nhật thông tin người dùng thành công! Vui lòng kiểm tra lại email và số điện thoại"} 
+                message={Update_Message} 
             />
         </>
         

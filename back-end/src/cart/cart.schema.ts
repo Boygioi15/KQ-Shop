@@ -35,7 +35,5 @@ export class CartItem {
 export class Cart {
   @Prop({ type: [CartItem], default: undefined })
   items: CartItem[];
-  @Prop({ type: Date, default: Date.now, expireAfterSeconds: 20 }) // TTL Index
-  expireDate?: Date; // Field for expiry time
 }
 export const CartsSchema = SchemaFactory.createForClass(Cart);

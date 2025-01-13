@@ -7,12 +7,14 @@ import { UserService } from './user.service';
 import { UserRepository } from './user.repository';
 import { AuthModule } from 'src/auth/auth.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { CartModule } from 'src/cart/cart.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     forwardRef(() => AuthModule),
-    CloudinaryModule
+    CloudinaryModule,
+    forwardRef(()=>CartModule)
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository],

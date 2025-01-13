@@ -53,6 +53,9 @@ export default function AddressPage(){
                                 addresses = addresses.filter((address)=>!address.default)
                                 addresses.unshift(defaultAddress)
                                 for(let i = 0; i<addresses.length; i++){
+                                    if(!addresses[i]){
+                                        continue;
+                                    }
                                     if(i>0){
                                         result.push(<hr/>)
                                     }                              

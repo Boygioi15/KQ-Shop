@@ -23,10 +23,12 @@ export class UserController {
       if(!response){
         throw new Error("Cập nhật hình ảnh thất bại!")
       }
+      //console.log(response)
       updateUserInfo.thumbnailURL = response.url;
       updateUserInfo.thumbnail_PublicID = response.public_id;
     }
-    console.log(updateUserInfo)
+    //console.log("Checkmark")
+    //console.log(updateUserInfo)
     return await this.userService.updateInfo(req.user._id, updateUserInfo)
   }
   @Patch('/password')

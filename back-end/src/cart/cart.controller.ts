@@ -7,29 +7,29 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Request
 } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CartItemDto } from './dto/cart-add-new-item.dto';
 import { updateCartItemAmountDto } from './dto/update-cart-item-amount.dto';
 import { SelectCartItemsByShopDto } from './dto/select-cart-items-by-shop.dto';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('api/cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
-
-  @Post('/anonymous')
-  createAnonymous() {
-    return this.cartService.createAnonymous();
-  }
-
   @Get()
   findAll() {
     return this.cartService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cartService.findOne(id);
+  @Get('/cart-detail')
+  @UseGuards(JwtGuard)
+  findCartOfUser(@Request() req) {
+    console.log("Checkmark");
+    console.log(req.user);
+    return this.cartService.findCartOfUser(req.user._id);
   }
   @Post('/:cartId/items/add-item')
   addNewItemToCart(@Param('cartId') id: string, @Body() newCartItemDto : CartItemDto){

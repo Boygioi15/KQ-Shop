@@ -26,17 +26,21 @@ export function ProductDisplay(){
       return (
         <div className="HomePage_ProductDisplay"> 
           {briefProductList.length > 0 ? (
-            briefProductList.map(({ id, name, price, shop, initImgURL, hoverImgURL }) => (
-              <BriefProductCard 
-                key={id} 
-                id={id} 
-                name={name} 
-                shop={shop}
-                price={price} 
-                initImgURL={initImgURL} 
-                hoverImgURL={hoverImgURL} 
-              />
-            ))
+            briefProductList.filter((briefProduct) => briefProduct) // Filter out null/undefined
+            .map((briefProduct) => {
+              const { id, name, price, shop, initImgURL, hoverImgURL } = briefProduct;
+              return (
+                <BriefProductCard
+                  key={id}
+                  id={id}
+                  name={name}
+                  shop={shop}
+                  price={price}
+                  initImgURL={initImgURL}
+                  hoverImgURL={hoverImgURL}
+                />
+              );
+            })
           ) : (
             <h1>There is no product to display</h1>
           )}

@@ -42,16 +42,21 @@ export class ProductService {
     const products = await this.productModel.find();
     return Promise.all(
       products.map(async (product) => {
-        const price = await this.getDisplayPrice(product.id);
-        const shopName = (await this.shopService.findOne(product.shopRef.toString())).name;
-        return {
-          id: product._id.toString(),
-          name: product.name,
-          shop: shopName,
-          price: price,
-          initImgURL: product.init_ThumbnailURL,
-          hoverImgURL: product.hover_ThumbnailURL,
-        };
+        try{
+          const price = await this.getDisplayPrice(product.id);
+          const shopName = (await this.shopService.findOne(product.shopRef.toString())).name;
+          return {
+            id: product._id.toString(),
+            name: product.name,
+            shop: shopName,
+            price: price,
+            initImgURL: product.init_ThumbnailURL,
+            hoverImgURL: product.hover_ThumbnailURL,
+          };
+        }
+        catch(error){
+          console.log("Error retrieving product, productID:", product._id)
+        }
       })
     );
   }

@@ -11,7 +11,7 @@ export enum Role {
 
 @Schema()
 class Address{
-  @Prop({ type: MongooseTypes.ObjectId, auto: true, unique: true, required: true })
+  @Prop({ type: MongooseTypes.ObjectId, auto: true, required: true })
   _id: MongooseTypes.ObjectId;
   
   @Prop({required: true})
@@ -43,6 +43,9 @@ export class User {
   @Prop()
   birthDate: Date;
 
+  @Prop()
+  gender: String;
+  
   @Prop({ unique: true, sparse: true })
   email?: string;
 

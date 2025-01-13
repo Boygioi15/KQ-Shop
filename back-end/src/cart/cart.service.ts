@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -9,31 +9,35 @@ import { ProductIdentifier } from 'src/product/product.productIdentifier';
 import {Types as MoongooseTypes} from 'mongoose'
 import { CartItemDto } from './dto/cart-add-new-item.dto';
 import { updateCartItemAmountDto } from './dto/update-cart-item-amount.dto';
+import { UserService } from 'src/user/user.service';
 @Injectable()
 export class CartService {
   constructor(
     @InjectModel('Cart')
     private readonly cartModel: Model<CartDocument>,
     private readonly productService: ProductService,
+    @Inject(forwardRef(() => UserService)) private readonly userService: UserService,
   ) {}
-  async createAnonymous() {
-    const newCart = new this.cartModel();
-    console.log(newCart)
-    newCart.expireDate = new Date(Date.now() + 10*1000);
-    return await newCart.save();
-  }
-  async createWithUserRef(local_anonymous_cartID: string) {
+  async createWithUserRef(local_anonymous_cartID: string = null) {
     const newCart = new this.cartModel();
     //add item from local_anonymous cart
+    if(local_anonymous_cartID){
+      
+    }
     await newCart.save();
     return newCart.id;
   }
-
   async findAll() {
     return await this.cartModel.find();
   }
-  async findOne(id: string) {
-    return await this.cartModel.findById(id);
+  async findOne(cartID: string){
+    return await this.cartModel.findById(cartID);
+  }
+  async findCartOfUser(userId: string) {
+    const user = await this.userService.getUserDetail(userId);
+    const cartRef = user.cartRef;
+    const cartDetail = await this.findOne(cartRef.toString());
+    return cartDetail;
   }
   async addItemToCart(
     cartID: string,
