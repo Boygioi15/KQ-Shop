@@ -1,0 +1,22 @@
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family: "SF Pro Display", sans-serif; 
+  background-color: #f3f4f6;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url(../../assets/font/SF-Pro-Display/SF-Pro-Display-Black.otf)
+    format("otf");
+  font-weight: normal;
+  font-style: normal;
+}
