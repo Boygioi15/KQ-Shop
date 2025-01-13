@@ -5,7 +5,7 @@ export const fetchAccount = createAsyncThunk(
   "account/fetchAccount",
   async () => {
     const response = await callAccount();
-    return response.metadata;
+    return response.data;
   }
 );
 
@@ -16,11 +16,23 @@ const initialState = {
   errorRefreshToken: "",
   user: {
     _id: "",
-    email: "",
     name: "",
-    avatar: "",
-    role: "",
-  },
+    email: "",
+    isSeller: false,
+    createdAt: "",
+    phone: "",
+    thumbnailURL: "",
+    thumbnail_PublicID: "",
+    addresses: [
+      {
+        _id: "",
+        receiverName: "",
+        receiverPhone: "",
+        receiverAddress: "",
+        default: false
+      }
+    ]
+  }
 };
 
 const accountSlice = createSlice({
@@ -29,25 +41,15 @@ const accountSlice = createSlice({
   reducers: {
     setUserLoginInfo: (state, action) => {
       state.isAuthenticated = true;
-      state.isLoading = false;
-      state.user._id = action?.payload?._id;
-      state.user.email = action.payload.usr_email;
-      state.user.name = action.payload.usr_name;
-      state.user.role = action?.payload?.usr_role;
-      state.user.avatar = action?.payload?.usr_avatar;
+      state.user = {
+        ...state.user,
+        ...action.payload
+      };
     },
     setLogoutAction: (state, action) => {
       localStorage.clear();
       state.isAuthenticated = false;
-      state.user = {
-        _id: "",
-        email: "",
-        name: "",
-        role: {
-          _id: "",
-          name: "",
-        },
-      };
+      state.user = initialState.user;
     },
     setRefreshTokenAction: (state, action) => {
       state.isRefreshToken = action.payload?.status ?? false;
@@ -64,15 +66,17 @@ const accountSlice = createSlice({
     });
 
     builder.addCase(fetchAccount.fulfilled, (state, action) => {
+      console.log("🚀 ~ file: accountSlice.jsx ~ line 108 ~ builder.addCase ~ action", action)
       if (action.payload) {
         state.isAuthenticated = true;
         state.isLoading = false;
 
         state.user._id = action?.payload?._id;
-        state.user.email = action.payload.usr_email;
-        state.user.name = action.payload.usr_name;
-        state.user.role = action?.payload?.usr_role;
-        state.user.avatar = action?.payload?.usr_avatar;
+        state.user.email = action.payload.email;
+        state.user.name = action.payload.name;
+        state.user.phone = action.payload.phone;
+        state.user.isSeller = action.payload.isSeller;
+        state.user.thumbnailURL = action.payload.thumbnailURL || "http://res.cloudinary.com/ddrfocetn/image/upload/v1736180530/kq-shop/wqyattmg59aurbmkzzl8.jpg"; 
       }
     });
 

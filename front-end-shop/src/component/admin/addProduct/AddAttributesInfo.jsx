@@ -1,105 +1,123 @@
 import React, { useState, useEffect } from "react";
-import { AiOutlineEdit, AiOutlineCheck, AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlinePlus } from "react-icons/ai";
+import { v4 as uuidv4 } from 'uuid';
 
 const AddAttributesInfo = ({ productData, onUpdateAttributes }) => {
-  const [attributes, setAttributes] = useState([]); // List of attributes
-  const [editingPropertyName, setEditingPropertyName] = useState(null); // Editing state for attribute names
+  const [attributes, setAttributes] = useState([]); // Initialize as an array
+  const [errorMessages, setErrorMessages] = useState({}); // To track validation errors
 
-  // Update attributes and synchronize with the parent component
+  // Function to update local attributes and notify parent
   const setAttributesWithCallback = (updatedAttributes) => {
     setAttributes(updatedAttributes);
     if (onUpdateAttributes) {
-      onUpdateAttributes(updatedAttributes); // Send updated data to the parent
+      onUpdateAttributes(updatedAttributes);
     }
   };
 
   useEffect(() => {
-    if (productData.attributes && productData.attributes.length > 0) {
+    if (productData.attributes && Array.isArray(productData.attributes)) {
       setAttributes(productData.attributes);
     } else {
       setAttributes([]);
     }
   }, [productData]);
 
-  const handleAddProperty = () => {
-    const newProperty = {
-      displayName: `Thuộc tính ${attributes.length + 1}`,
-      value: "",
-    };
-    setAttributesWithCallback([...attributes, newProperty]);
+  // Handle adding a new attribute
+  const handleAddAttribute = () => {
+    const newAttribute = { id: uuidv4(), name: "", value: "" };
+    setAttributesWithCallback([...attributes, newAttribute]);
   };
 
-  const handleDeleteProperty = (propertyIndex) => {
-    const updatedAttributes = attributes.filter((_, index) => index !== propertyIndex);
+  // Handle changes to attribute name or value with validation
+  const handleChangeAttribute = (id, field, value) => {
+    const updatedAttributes = attributes.map(attr => {
+      if (attr.id === id) {
+        return { ...attr, [field]: value };
+      }
+      return attr;
+    });
+
+    // Validation for attribute names
+    let errors = { ...errorMessages };
+    if (field === "name") {
+      const names = updatedAttributes.map(attr => attr.name.trim());
+      const hasDuplicates = names.some((name, index) => name !== "" && names.indexOf(name) !== index);
+
+      if (value.trim() === "") {
+        errors[id] = "Tên thuộc tính không được để trống.";
+      } else if (hasDuplicates) {
+        errors[id] = "Tên thuộc tính phải là duy nhất.";
+      } else {
+        delete errors[id];
+      }
+    }
+
+    setErrorMessages(errors);
     setAttributesWithCallback(updatedAttributes);
   };
 
-  const handleSavePropertyName = () => {
-    setEditingPropertyName(null); // Reset editing state
+  // Handle deleting an attribute with confirmation
+  const handleDeleteAttribute = (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa thuộc tính này?")) {
+      const updatedAttributes = attributes.filter(attr => attr.id !== id);
+      setAttributesWithCallback(updatedAttributes);
+      
+      // Remove any associated error message
+      const updatedErrors = { ...errorMessages };
+      delete updatedErrors[id];
+      setErrorMessages(updatedErrors);
+    }
   };
 
   return (
     <div className="p-4 bg-white shadow-md rounded-lg">
       <h2 className="text-xl font-bold mb-4">Thuộc tính sản phẩm</h2>
 
-      {attributes.map((property, propertyIndex) => (
-        <div key={propertyIndex} className="flex items-center gap-4 mb-4">
-          {/* Display Name */}
-          <div className="flex items-center w-1/3">
-            {editingPropertyName === propertyIndex ? (
-              <div className="flex items-center gap-2 w-full">
-                <input
-                  type="text"
-                  value={property.displayName}
-                  onChange={(e) => {
-                    const updatedAttributes = [...attributes];
-                    updatedAttributes[propertyIndex].displayName = e.target.value;
-                    setAttributesWithCallback(updatedAttributes);
-                  }}
-                  className="border rounded-md px-2 py-1 w-full"
-                />
-              </div>
-            ) : (
-              <span>{property.displayName}</span>
-            )}
-          </div>
-
-          {/* Input Value */}
-          <input
-            type="text"
-            value={property.value}
-            onChange={(e) => {
-              const updatedAttributes = [...attributes];
-              updatedAttributes[propertyIndex].value = e.target.value;
-              setAttributesWithCallback(updatedAttributes);
-            }}
-            className="border rounded-md px-2 py-1 w-2/3"
-          />
-
-          {/* Edit and Delete Icons */}
-          <div className="flex gap-2">
-            {editingPropertyName === propertyIndex ? (
-              <AiOutlineCheck
-                onClick={handleSavePropertyName}
-                className="text-green-500 cursor-pointer"
+      {/* Render attributes as list */}
+      <ul className="mb-4">
+        {attributes.map((attribute) => (
+          <li key={attribute.id} className="flex items-center gap-4 mb-2">
+            {/* Attribute Name */}
+            <div className="flex-1">
+              <input
+                type="text"
+                value={attribute.name}
+                onChange={(e) => handleChangeAttribute(attribute.id, "name", e.target.value)}
+                placeholder="Tên thuộc tính"
+                className={`border rounded-md px-2 py-1 w-full ${errorMessages[attribute.id] ? 'border-red-500' : 'border-gray-300'}`}
               />
-            ) : (
-              <AiOutlineEdit
-                onClick={() => setEditingPropertyName(propertyIndex)}
-                className="text-blue-500 cursor-pointer"
-              />
-            )}
-            <AiOutlineDelete
-              onClick={() => handleDeleteProperty(propertyIndex)}
-              className="text-red-500 cursor-pointer"
-            />
-          </div>
-        </div>
-      ))}
+              {errorMessages[attribute.id] && (
+                <p className="text-red-500 text-sm mt-1">{errorMessages[attribute.id]}</p>
+              )}
+            </div>
 
-      {/* Add Property */}
+            {/* Attribute Value */}
+            <div className="flex-1">
+              <input
+                type="text"
+                value={attribute.value}
+                onChange={(e) => handleChangeAttribute(attribute.id, "value", e.target.value)}
+                placeholder="Giá trị"
+                className="border rounded-md px-2 py-1 w-full"
+              />
+            </div>
+
+            {/* Delete Button */}
+            <button
+              type="button"
+              onClick={() => handleDeleteAttribute(attribute.id)}
+              className="text-red-500 hover:text-red-700"
+              title="Xóa thuộc tính"
+            >
+              <AiOutlineDelete size={20} />
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {/* Add New Attribute Button */}
       <button
-        onClick={handleAddProperty}
+        onClick={handleAddAttribute}
         className="text-blue-500 border border-blue-500 px-2 py-1 rounded-md hover:bg-blue-500 hover:text-white"
       >
         + Thêm thuộc tính

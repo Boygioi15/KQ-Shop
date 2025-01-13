@@ -1,12 +1,55 @@
-import React from "react";
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { formatVND } from "../../../utils/format";
+import React, { useState, useEffect } from "react";
+import { getCategoryById } from "../../../config/api";
 
 const ProductTable = ({ products }) => {
+  const [categoryNames, setCategoryNames] = useState({});
+  const [failedCategories, setFailedCategories] = useState(new Set());
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const uniqueCategories = [...new Set(products.map(p => p.categoryRef))];
+      
+      try {
+        const results = await Promise.all(
+          uniqueCategories.map(async (catId) => {
+            try {
+              // Add 5 second timeout
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 5000);
+              
+              const response = await getCategoryById(catId);
+              clearTimeout(timeoutId);
+              
+              return { id: catId, name: response.data.name, success: true };
+            } catch (err) {
+              setFailedCategories(prev => new Set([...prev, catId]));
+              return { id: catId, name: 'Unknown Category', success: false };
+            }
+          })
+        );
+        
+        const categoryMap = results.reduce((acc, { id, name }) => {
+          acc[id] = name;
+          return acc;
+        }, {});
+        
+        setCategoryNames(categoryMap);
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+
+    if (products.length > 0) {
+      loadCategories();
+    }
+  }, [products]);
+
   const formatDate = (dateString) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-GB").format(date); // dd/mm/yyyy
+    return new Intl.DateTimeFormat("en-GB").format(date);
   };
 
   return (
@@ -14,15 +57,15 @@ const ProductTable = ({ products }) => {
       <table className="w-full bg-white table-auto shadow-md rounded-lg">
         <thead className="rounded-t-lg">
           <tr className="bg-white">
-            <th className="p-5 text-left rounded-full">Image</th>
-            <th className="p-5 text-left">Product Name</th>
-            <th className="p-5 text-left">Stock</th>
-            <th className="p-5 text-left">Price</th>
-            <th className="p-5 text-left">Category</th>
-            <th className="p-5 text-left hidden lg:table-cell">Tags</th>
-            <th className="p-5 text-left hidden lg:table-cell">Review</th>
-            <th className="p-5 text-left">Date</th>
-            <th className="p-5 text-center rounded-full">Actions</th>
+            <th className="p-5 text-left rounded-full">Hình ảnh</th>
+            <th className="p-5 text-left">Tên sản phẩm</th>
+            <th className="p-5 text-left">Số lượng</th>
+            <th className="p-5 text-left">Giá</th>
+            <th className="p-5 text-left">Danh mục</th>
+            <th className="p-5 text-left">Màu sắc</th>
+            <th className="p-5 text-left">Kích thước</th>
+            <th className="p-5 text-left">Ngày thêm</th>
+            <th className="p-5 text-center rounded-full">Tùy chọn</th>
           </tr>
         </thead>
         <tbody>
@@ -30,49 +73,33 @@ const ProductTable = ({ products }) => {
             <tr key={product._id} className="hover:bg-gray-50">
               <td className="p-5 border-b">
                 <img
-                  src={
-                    product.product_thumb || "https://via.placeholder.com/50"
-                  }
+                  src={product.init_ThumbnailURL || "https://via.placeholder.com/50"}
                   className="h-10 w-10 rounded"
-                  alt={product.product_name}
+                  alt={product.name}
                 />
               </td>
               <td className="p-5 border-b text-mainColor font-semibold">
-                {product.product_name}
-              </td>
-              <td
-                className={`p-5 border-b ${
-                  product.product_quantity > 10
-                    ? "text-green-500"
-                    : product.product_quantity > 0
-                    ? "text-yellow-500"
-                    : "text-red-500"
-                }`}
-              >
-                {product.product_stockStatus} ({product.product_quantity})
+                {product.name}
               </td>
               <td className="p-5 border-b">
-                {formatVND(product.product_price?.orignalPrice)}
+                {product.types.reduce((total, type) => 
+                  total + type.details.reduce((sum, detail) => sum + detail.inStorage, 0)
+                , 0)}
+              </td>
+              <td className="p-5 border-b">
+                {formatVND(product.types[0]?.details[0]?.price || 0)}
               </td>
               <td className="p-5 border-b text-mainColor">
-                {product.product_category
-                  .map((category) => category.category_name)
-                  .join(", ")}
+                {failedCategories.has(product.categoryRef) 
+                  ? 'Failed to load'
+                  : (categoryNames[product.categoryRef] || 'Loading...')}
               </td>
-
-              <td className="p-5 border-b text-mainColor hidden lg:table-cell">
-                {Array.isArray(product.product_tags)
-                  ? product.product_tags.join(", ")
-                  : "-"}
+              <td className="p-5 border-b">
+                {product.types.map(type => type.color_name).join(", ")}
               </td>
-              <td className="p-5 border-b hidden lg:table-cell">
-                {product.product_ratingAverage !== null &&
-                product.product_ratingAverage !== undefined
-                  ? product.product_ratingAverage
-                  : "-"}{" "}
-                &#9733;
+              <td className="p-5 border-b">
+                {product.types[0]?.details.map(detail => detail.size_name).join(", ")}
               </td>
-
               <td className="p-5 border-b text-gray-700 font-semibold">
                 {formatDate(product.createdAt)}
               </td>

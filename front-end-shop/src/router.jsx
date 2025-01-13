@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAccount } from "./redux/slice/accountSlice";
@@ -43,61 +43,16 @@ const RouterCustom = () => {
   return (
     <>
       <Routes>
-        {/* User Routes */}
-        <Route path="/" element={<MasterLayout />}>
-          <Route
-            path={ROUTERS.USER.HOME}
-            element={<HomePage />}
-            breadcrumbItems={[{ name: "Home", link: "/" }]} // Truyền breadcrumb cho Home
-          />
-          <Route
-            path={ROUTERS.USER.LOGIN}
-            element={<LoginPage />}
-            breadcrumbItems={[
-              { name: "Home", link: "/" },
-              { name: "Login", link: ROUTERS.USER.LOGIN },
-            ]} // Truyền breadcrumb cho Login
-          />
-          <Route
-            path={ROUTERS.USER.HOME + "/:categorySlug"}
-            element={<ProductPage />}
-            breadcrumbItems={[
-              { name: "Home", link: "/" },
-              { name: "Products", link: ROUTERS.USER.HOME },
-            ]} // Truyền breadcrumb cho Products
-          />
-          <Route
-            path={ROUTERS.USER.HOME + "/tim-kiem"}
-            element={<SearchPage />}
-            breadcrumbItems={[
-              { name: "Home", link: "/" },
-              { name: "Search", link: ROUTERS.USER.HOME + "/tim-kiem" },
-            ]} // Truyền breadcrumb cho Search
-          />
-          <Route path={ROUTERS.USER.CART} element={<CartPage />} />
-
-          {/* Profile Routes */}
-          <Route path={ROUTERS.USER.PROFILE} element={<ProfilePage />}>
-            <Route index element={<Info />} />
-            <Route path="" element={<Info />} />
-            <Route path={ROUTERS.USER.ORDER_LIST} element={<OrderHistory />} />
-            <Route path={ROUTERS.USER.FAVORITES} element={<Favorites />} />
-            <Route path={ROUTERS.USER.ADDRESS} element={<Address />} />
-          </Route>
-
-          <Route
-            path={ROUTERS.USER.PRODUCT_DETAIL(":productId")}
-            element={<DetailProduct />}
-          />
-        </Route>
-
         {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="/admin/sales-analytics" element={<DashBoard />} />
-          <Route path="/admin/products/add" element={<AddProductPage />} />
-          <Route path="/admin/products/edit/:id" element={<AddProductPage />} />
-          <Route path={ROUTERS.ADMIN.ORDER} element={<OrderListPage />} />
-          <Route path="/admin/stock" element={<StockPage />} />
+        <Route path="/" element={<AdminLayout />}>
+          <Route index element={<Navigate to="/sales-analytics" replace />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/sales-analytics" element={<DashBoard />} />
+          <Route path="/products/add" element={<AddProductPage />} />
+          <Route path="/products/edit/:id" element={<AddProductPage />} />
+          <Route path={"/orders"} element={<OrderListPage />} />
+          <Route path="/stock" element={<StockPage />} />
         </Route>
 
         {/* Catch-all for undefined routes */}

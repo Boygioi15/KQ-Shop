@@ -14,6 +14,7 @@ import { LoggerMiddleware } from './logger/logger.middleware';
 import { PaymentModule } from './payment/payment.module';
 import { ReviewModule } from './review/review.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     EventModule,
     PaymentModule,
     ReviewModule,
+    UploadModule,
     CloudinaryModule,
   ],
   controllers: [AppController],

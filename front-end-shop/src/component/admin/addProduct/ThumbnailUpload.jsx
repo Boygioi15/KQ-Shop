@@ -1,31 +1,41 @@
-import React from "react";
-import { FaUpload, FaTrash } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaUpload, FaTrash, FaSpinner } from "react-icons/fa";
 import { getImageLink } from "../../../config/api";
 
-const ThumbnailUpload = ({ productData, setProductData }) => {
+const ThumbnailUpload = ({ productData, setProductData, fieldName }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const getFieldLabel = () => {
+    if (fieldName === "init_thumbnailURL") return "Ảnh sản phẩm";
+    if (fieldName === "hover_thumbnailURL") return "Ảnh nổi bật";
+    return "Ảnh sản phẩm";
+  };
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0]; // Lấy file từ input
     if (file) {
       console.log(
-        "🚀 ~ handleFileChange ~ productData.thumb:",
-        productData.thumb
+        `🚀 ~ handleFileChange ~ productData.${fieldName}:`,
+        productData[fieldName]
       );
       const formData = new FormData();
       formData.append("image", file); 
+      setIsUploading(true);
 
       try {
         const response = await getImageLink(formData);
-        console.log("🚀 ~ handleFileChange ~ response:", response);
+        console.log(`🚀 ~ handleFileChange ~ response for ${fieldName}:`, response);
         // Cập nhật thông tin ảnh vào productData
         setProductData({
           ...productData,
-          thumb: response.imageUrl,
+          [fieldName]: response.data.imageUrl,
         });
       } catch (error) {
-        console.error("Lỗi khi tải hình ảnh lên:", error);
+        console.error(`Lỗi khi tải hình ảnh lên cho ${fieldName}:`, error);
       }
 
       // Reset input file để có thể upload lại cùng một file
+      setIsUploading(false);
       e.target.value = null;
     }
   };
@@ -33,15 +43,15 @@ const ThumbnailUpload = ({ productData, setProductData }) => {
   const handleRemoveImage = () => {
     setProductData({
       ...productData,
-      thumb: null, // Xóa đường dẫn ảnh hiện tại
+      [fieldName]: null, // Xóa đường dẫn ảnh hiện tại
     });
   };
 
   return (
     <div className="w-full h-auto">
       <div className="flex flex-row justify-between">
-        <h2 className="text-xl font-bold mb-4">Ảnh sản phẩm</h2>
-        {productData.thumb && (
+        <h2 className="text-xl font-bold mb-4">{getFieldLabel()}</h2>
+        {productData[fieldName] && (
           <button
             onClick={handleRemoveImage}
             className=" bg-red-500 text-white rounded-full p-2 hover:bg-red-600 w-8 h-8"
@@ -51,19 +61,24 @@ const ThumbnailUpload = ({ productData, setProductData }) => {
         )}
       </div>
       <label
-        htmlFor="uploadFile1"
+        htmlFor={`uploadFile-${fieldName}`}
         className={`bg-white text-gray-500 font-semibold text-base rounded h-auto flex flex-col items-center 
         justify-center cursor-pointer ${
-          productData.thumb ? "" : "border-2 border-mainColor border-dashed"
+          productData[fieldName] ? "" : "border-2 border-mainColor border-dashed"
         } 
         mx-auto font-[sans-serif]`}
       >
-        {productData.thumb ? (
+        {isUploading ? (
+          <div className="flex flex-col justify-center items-center p-20">
+            <FaSpinner className="w-11 mb-2 text-mainColor animate-spin" />
+            <p>Uploading...</p>
+          </div>
+        ) : productData[fieldName] ? (
           <div className="relative w-full h-full flex items-center justify-center">
             <img
-              src={productData.thumb}
-              alt="Thumbnail Preview"
-              className="max-w-full max-h-full object-contain transform scale-200"
+              src={productData[fieldName]}
+              alt={`Thumbnail Preview ${fieldName}`}
+              className="max-w-xs max-h-60 object-contain" // Added size constraints
             />
           </div>
         ) : (
@@ -74,10 +89,10 @@ const ThumbnailUpload = ({ productData, setProductData }) => {
         )}
         <input
           type="file"
-          id="uploadFile1"
-          name="thumbnail"
+          id={`uploadFile-${fieldName}`}
+          name={fieldName}
           accept="image/*"
-          onChange={handleFileChange} // Khi chọn file, gọi handleFileChange
+          onChange={handleFileChange}
           className="hidden"
         />
       </label>

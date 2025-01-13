@@ -1,4 +1,5 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { isUppercase } from 'class-validator';
 import { Document, ObjectId, Types } from 'mongoose';
 
 export type ProductDocument = Product & Document;
@@ -44,6 +45,7 @@ export class Product {
 
   @Prop()
   init_ThumbnailURL: string;
+  
   @Prop()
   hover_ThumbnailURL: string;
 
@@ -58,6 +60,16 @@ export class Product {
   
   @Prop({ type: [Product_Types], required: true })
   types: Product_Types[]; // Each type will have its own _id
+
+  @Prop({ 
+    required: true, 
+    type: Map, 
+    of: String 
+  })
+  attributes: Map<string, string>;
+
+  @Prop({ required: true, default: true})
+  isPublished: boolean;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
