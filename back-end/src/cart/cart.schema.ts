@@ -6,6 +6,7 @@ export type CartDocument = Cart & Document;
 
 @Schema()
 export class CartItem {
+  _doc: any;
   constructor(
     productID: string,
     productTypeID: string,
@@ -33,7 +34,7 @@ export class CartItem {
 
 @Schema({ collection: 'carts' })
 export class Cart {
-  @Prop({ type: [CartItem], default: undefined })
+  @Prop({ type: [CartItem], default: [undefined] })
   items: CartItem[];
 }
 export const CartsSchema = SchemaFactory.createForClass(Cart);

@@ -1,26 +1,58 @@
 .QuantitySelector{
-    font-size: 20px;
-    width: 150px;
+    padding: 2px 5px;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    border-radius: 10px;
+    border-color: gray;
+    border-width: 1px;
+    border-style: solid;
+    color: black;
+}
+.QuantitySelector:hover{
+    border-width: 2px;
+    border-color: black;
+}
+.QuantitySelector input{
+    width: 20px;
+}
+.QuantitySelector .sc_dropdown{
+    position: relative;
+    display: flex;
+}
+.QuantitySelector_Dropdown{
+    position: absolute;
+    top:110%;
+    right: -10px;
+    z-index: 2000;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    padding: 5px;
+}
+.QuantitySelector_DropDown_Inactive{
+    display: none;
+}
+.QuantitySelector_DropDown_Active{
+    display: flex;
+    flex-direction: column;
+}
+.NumberRow{
+    width: 60px;
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: 2px; 
-    border-color: black;
-    border-width:2px;
-    border-style: solid;
+    color: black;
+    
+    padding: 2px 5px;
 }
-
-.QuantitySelector .button{
-    font-size: 40px;
-    font-weight: bold;
+.NumberRow:hover{
+    background-color: rgb(245,245,245);
+}
+.NumberRowNormal{
     background-color: white;
-    border: none;
-    padding: 10px 15px;
 }
-.QuantitySelector .button:hover{
-    background-color: rgb(230, 230, 230);
-    cursor: pointer;
-}
-.QuantitySelector .button:active{
-    background-color: rgb(210, 210, 210);
+.NumberRowSelected{
+    background-color: rgb(235,235,235);
 }

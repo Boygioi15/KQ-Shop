@@ -21,10 +21,10 @@
 .User-space-form .TextInput:focus {
     border-color: black;
 }
-.User-space-form .RadioInput{
+.RadioInput{
     width: 20px;
     height: 20px;
 }
-.User-space-form .RadioInput[type='radio'] {
+.RadioInput[type='radio'] {
     accent-color: black;
 }

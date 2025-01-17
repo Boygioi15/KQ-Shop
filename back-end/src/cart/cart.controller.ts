@@ -8,7 +8,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  Request
+  Request,
+  Req
 } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CartItemDto } from './dto/cart-add-new-item.dto';
@@ -29,32 +30,46 @@ export class CartController {
   findCartOfUser(@Request() req) {
     console.log("Checkmark");
     console.log(req.user);
-    return this.cartService.findCartOfUser(req.user._id);
+    return this.cartService.getCartDetailOfUser(req.user._id);
   }
-  @Post('/:cartId/items/add-item')
-  addNewItemToCart(@Param('cartId') id: string, @Body() newCartItemDto : CartItemDto){
-    return this.cartService.addItemToCart(id,newCartItemDto)
+  @Post('/items/add-item')
+  @UseGuards(JwtGuard)
+  addNewItemToCart(@Body() newCartItemDto : CartItemDto, @Request() req){
+    return this.cartService.addItemToCartOfUser(req.user._id,newCartItemDto)
   }
-  @Put('/:cartId/items/select-by-shop/:shopId')
-  selectCartItemWithShop(@Param('cartId') cartId: string, @Param('shopId') shopId: string, @Body() selectCartItemWithShop : SelectCartItemsByShopDto){
-    return this.cartService.selectCartItemByShop(cartId, shopId, selectCartItemWithShop)
+  @Put('/items/select-by-shop/:shopId')
+  @UseGuards(JwtGuard)
+  selectCartItemWithShop(@Param('shopId') shopId: string, @Body() 
+    selectCartItemWithShop : SelectCartItemsByShopDto,
+    @Request() req
+  ){
+    return this.cartService.selectCartItemByShopOfUser(req.user._id, shopId, selectCartItemWithShop)
   }
-  @Put('/:cartId/items/select-all')
-  selectAllCartItem(@Param('cartId') cartId: string,@Body() selectDto : SelectCartItemsByShopDto){
-    return this.cartService.selectAllItem(cartId, selectDto)
+  @Put('/items/select-all')
+  @UseGuards(JwtGuard)
+  selectAllCartItem(@Body() selectDto : SelectCartItemsByShopDto, @Request() req){
+    return this.cartService.selectAllItem(req.user._id, selectDto)
     
   }
-  @Delete('/:cartId/items/:cartItemId/remove-item')
-  removeItemFromCart(@Param('cartId') cartID: string,@Param('cartItemId') cartItemID: string){
-    return this.cartService.removeItemFromCart(cartID,cartItemID)
+  @Delete('/items/:cartItemId/remove-item')
+  @UseGuards(JwtGuard)
+  removeItemFromCart(@Param('cartItemId') cartItemID: string, @Request() req){
+    console.log("HI")
+    return this.cartService.removeItemFromCartOfUser(req.user._id,cartItemID)
   }
-  @Put('/:cartId/items/:cartItemId/update-amount')
-  updateCartItemAmount(@Param('cartId') cartID: string,@Param('cartItemId') cartItemID: string, @Body() updateCartItemAmountDto: updateCartItemAmountDto){
-    return this.cartService.updateItemQuantityInCart(cartID,cartItemID, updateCartItemAmountDto)
+  @Put('/items/:cartItemId/update-amount')
+  @UseGuards(JwtGuard)
+  updateCartItemAmount(cartID: string,
+    @Param('cartItemId') cartItemID: string, 
+    @Body() updateCartItemAmountDto: updateCartItemAmountDto,
+    @Request() req
+  ){
+    return this.cartService.updateItemQuantityInCartOfUser(req.user._id,cartItemID, updateCartItemAmountDto)
   }
-  @Put('/:cartId/items/:cartItemId/toggle-select')
-  toggleSelectCartItem(@Param('cartId') cartID: string,@Param('cartItemId') cartItemID: string){
-    return this.cartService.toggleSelectCartItem(cartID,cartItemID)
+  @Put('/items/:cartItemId/toggle-select')
+  @UseGuards(JwtGuard)
+  toggleSelectCartItem(@Param('cartItemId') cartItemID: string, @Request() req){
+    return this.cartService.toggleSelectCartItemOfUser(req.user._id,cartItemID)
   }
   @Put('/clear-cart/:id')
   clearCart(@Param('id')id: string){

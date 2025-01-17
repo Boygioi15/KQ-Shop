@@ -9,6 +9,7 @@ import axios from 'axios'
 import './style.css'
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import CartPage from '../../pages/CartPage/CartPage';
 export default function TopNav(){
     
     return (
@@ -96,10 +97,14 @@ function Shortcut(){
             <span onClick={()=>navigate('/')} className='Shortcut_Homepage'>KQ-Shop</span>
             <QuickSearchBar />
             <div className="Shortcut_right">
-                <IconShortcut 
-                  initIcon={<FaShoppingCart  className='ShortcutIcon'/>}
-                  number={5}
-                />
+                <div className='sc_dropdown'>
+                    <IconShortcut 
+                    initIcon={<FaShoppingCart  className='ShortcutIcon'/>}
+                    number={5}
+                    />
+                    <CartPage className="Cart_Dropdown"/>
+                </div>
+                
                 
                 <div className="sc_dropdown" style={{position:"relative"}}>
                     <IconShortcut 
@@ -111,8 +116,8 @@ function Shortcut(){
                                 else{
                                     navigate("/user-space")
                                 }
-                                }
                             }
+                        }
                     />
                     {token && <div className="Login_Dropdown">
                         <label onClick={()=>{

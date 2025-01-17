@@ -55,7 +55,17 @@ h1{
   width: 30px;
   height: 30px;
 }
-
+.small-icon-1{
+  color: black;
+  font-size: 14px;
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+  border-radius: 3px;
+}
+.small-icon-1:hover{
+  background-color: rgb(240,240,240);
+}
 
 .event-banner-font{
   font-family: "Normal" ;
@@ -149,6 +159,42 @@ h1{
   background-color: rgb(50,50,50);
   cursor: pointer;
 }
+
+.standard-checkbox-1 {
+  /* Remove default checkbox appearance */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Basic box styles */
+  width: 20px;
+  height: 20px;
+  border: 1px solid gray;
+  border-radius: 1px;
+  background-color: #fff;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.standard-checkbox-1:checked {
+  background-color: black; /* Black background when checked */
+  color: white; /* Text/icon color inside the box (if used) */
+}
+.standard-checkbox-1:checked::after {
+  margin-bottom: 3px;
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 12px;
+  border: solid #fff; /* White checkmark color */
+  border-width: 0 2px 2px 0; /* Create the checkmark shape */
+  transform: rotate(45deg); /* Rotate to form the checkmark */
+}
+
+
 .nav-link{
   font-family: "Normal";
   font-size: 20px;

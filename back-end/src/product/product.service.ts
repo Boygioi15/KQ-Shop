@@ -127,17 +127,47 @@ export class ProductService {
       (element) =>
         element._id.toString() === productIdentifier.product_type_detailID,
     );
-
-    const inStorage = product_type_detail.inStorage;
-    if (inStorage < quantity) {
-      return { enough: false, inStorage: inStorage };
+    if (product_type_detail.inStorage < quantity) {
+      return { enough: false, inStorage: product_type_detail.inStorage };
     } else {
-      return { enough: true, inStorage: inStorage };
+      return { enough: true, inStorage: product_type_detail.inStorage };
     }
   }
   async getDisplayPrice(productID: string){
     const product = await this.productModel.findById(productID);
     const productPriceFirst = product.types[0].details[0].price;
     return productPriceFirst;
+  }
+  async getProductDetailInformation(productIdentifier: ProductIdentifier){
+    const product = await this.productModel.findById(productIdentifier.productID);
+    const productName = product.name;
+    
+    const product_types = product.types;
+    const product_type = product_types.find(
+      (element) => element._id.toString() === productIdentifier.product_typeID,
+    );
+    const productThumbnailURL = product_type.color_ImageURL[0];
+    const productTypeName = product_type.color_name;
+    const product_type_details = product_type.details;
+    const product_type_detail = product_type_details.find(
+      (element) =>
+        element._id.toString() === productIdentifier.product_type_detailID,
+    );
+    const productTypeDetailName = product_type_detail.size_name;
+    const productTypeDetailPrice = product_type_detail.price;
+    const productTypeDetailInStorage = product_type_detail.inStorage;
+    ////shop part
+    const shopRef = product.shopRef;
+    const shopName = (await this.shopService.findOne(shopRef.toString())).name
+    return {
+      productName,
+      productThumbnailURL,
+      productTypeName,
+      productTypeDetailName,
+      productTypeDetailPrice,
+      productTypeDetailInStorage,
+      shopRef,
+      shopName
+    }
   }
 }

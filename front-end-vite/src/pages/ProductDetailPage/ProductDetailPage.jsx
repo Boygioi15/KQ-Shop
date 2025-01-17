@@ -90,10 +90,6 @@ export default function ProductDetailPage(){
                             <SizeChooseBox size={detail} selected={detail===selectedSize} handleOnClick={()=>setSelectedSize(detail)}/>
                         ))}
                         </div>
-                        <div style={{display: "flex", flexDirection:"column", gap: "5px"}}>
-                            <div className="modal-product-name-font">{`Số lượng:`}</div>
-                            <QuantitySelector quantity={1} onIncrement={()=>{}} onDecrement={()=>{}}/>
-                        </div>
                         <div style={{marginTop: "10px"}}className="addToCartAndFavorite">
                             <button className="standard-button-1">THÊM VÀO GIỎ HÀNG</button>
                         </div>

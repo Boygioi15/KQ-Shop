@@ -1,0 +1,33 @@
+.TransactionPage{
+    width: 100%;
+    padding: 40px 80px;
+    gap: 16px;
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+    background-color: #f5f5f5;
+}
+.AddressList{
+    display: flex;
+    flex-direction: column;
+    gap:8px
+}
+.AddressBlockV2N{
+    border: 1px #AAAAAA solid;
+    border-radius:4px;
+    padding:5px 10px;
+    position: relative;
+}
+.AddressBlockV2N:hover{
+    background-color: rgb(240,240,240);
+    cursor: pointer;
+}
+.AddressBlockV2V{
+    border: 2px black solid;
+    border-radius:4px;
+    padding:5px 10px;
+    position: relative;
+}
+.AddressBlockV2V:hover{
+    background-color: rgb(240,240,240);
+    cursor: pointer;
+}

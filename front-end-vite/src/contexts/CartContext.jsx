@@ -1,58 +1,186 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useContext } from "react";
+import { useLoading } from "./LoadingContext";
 import axios from "axios";
 
-// Create the CartContext
 const CartContext = createContext();
 
-// CartProvider Component to wrap your app and provide cart context
-export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(null);
-  const [cartID, setCartID] = useState(localStorage.getItem("cartID"));
-
-  const requestCartDetail = async () => {
+export const CartProvider = ({children}) => {
+  const [cartDetail, setCartDetail] = useState(null);
+  const {showLoading, hideLoading} = useLoading();
+  const fetchCartDetail = async () => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      throw new Error('Không có token');
+    }
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/cart/${cartID}`
-      );
-      if (response && response.data) {
-        setCart(response.data); // Set the cart details in state
+      showLoading()
+      const response = await fetch('http://localhost:8000/api/cart/cart-detail', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log("New cart: ")
+      console.log(data);
+      setCartDetail(data);
+    }catch (error) {
+      if (error.response) {
+          alert(`Lấy thông tin giỏ hàng thất bại, lỗi: ` + error.response.data.msg);
+          throw new Error(error.response.data.msg);
+      } else if (error.request) {
+          alert('Không nhận được phản hồi từ server');
+          throw new Error(error.response.data.msg);
+      } else {
+          alert('Lỗi bất ngờ: ' + error.message);
+          throw new Error(error.response.data.msg);
       }
-    } catch (error) {
-      console.error("Error fetching cart details:", error);
+    }
+    finally{
+      hideLoading()
     }
   };
-  const requestNewAnonymousCart = async () => {
+  const addItemToCart = async (productIdentifier, quantity) => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      throw new Error('Không có token');
+    }
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/cart/anonymous"
-      );
-      if (response && response.data) {
-        localStorage.setItem("cartID", response.data._id);
-        console.log("set new cart id in local storage");
+      showLoading()
+      const response = await axios.post('http://localhost:8000/api/cart/items/add-item', {
+        productIdentifier,
+        quantity
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response);
+      const success = response.data.success;
+      if(success){
+        fetchCartDetail();
       }
-    } catch (error) {
-      console.error("Error fetching events:", error);
+      else{
+        const msg = response.data.msg;
+        throw new Error(msg);
+      }
+    }finally{
+      hideLoading()
     }
-  };
-
-  // Fetch cart details when cartID is available
-  useEffect(() => {
-    if (!cartID) {
-      requestNewAnonymousCart();
+  }
+  const removeItemFromCart = async (cartItemId) => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      throw new Error('Không có token');
     }
-  }, [cartID]);
-  useEffect(()=>{
-    if(cartID){
-      requestCartDetail();
+    try {
+      showLoading()
+      const response = await axios.delete(`http://localhost:8000/api/cart/items/${cartItemId}/remove-item`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+       console.log(response);
+       await fetchCartDetail();
+    }finally{
+      hideLoading()
     }
-  },[cartID])
-  // Provide cart and setter to the rest of the app
+  }
+  const toggleSelectedOfCartItem = async (cartItemId) => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      throw new Error('Không có token');
+    }
+    try {
+      showLoading()
+      const response = await axios.put(`http://localhost:8000/api/cart/items/${cartItemId}/toggle-select`,{},{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response);
+      fetchCartDetail();
+    }finally{
+      hideLoading()
+    }
+  }
+  const toggleSelectedOfCartShop = async (shopRef, selection) => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      throw new Error('Không có token');
+    }
+    try {
+      showLoading()
+      const response = await axios.put(`http://localhost:8000/api/cart/items/select-by-shop/${shopRef}`,{
+        select: selection
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchCartDetail();
+    }finally{
+      hideLoading()
+    }
+  }
+  const toggleSelectAll = async (selection) => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      throw new Error('Không có token');
+    }
+    try {
+      showLoading()
+      const response = await axios.put(`http://localhost:8000/api/cart/items/select-all`,{
+        select: selection
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchCartDetail();
+    }
+    catch(error){
+      throw error;
+    }
+    finally{
+      hideLoading()
+    }
+  }
+  const handleUpdateCartItemQuantity = async (cartItemId,newQuantity) => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      throw new Error('Không có token');
+    }
+    try {
+      showLoading()
+      const response = await axios.put(`http://localhost:8000/api/cart/items/${cartItemId}/update-amount`,{
+        quantity: newQuantity
+      },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const success = await response.data.success;
+      if(success){
+        await fetchCartDetail();
+      }
+      else{
+        const msg = await response.data.msg;
+        throw new Error(msg);
+      }
+    }finally{
+      hideLoading()
+    }
+  }
   return (
-    <CartContext.Provider value={{ cart, setCart, cartID, setCartID }}>
+    <CartContext.Provider value={{cartDetail, 
+      fetchCartDetail, addItemToCart, removeItemFromCart,
+      toggleSelectedOfCartItem, toggleSelectedOfCartShop, toggleSelectAll,
+      handleUpdateCartItemQuantity
+      }}>
       {children}
     </CartContext.Provider>
   );
+}
+export const useCart = () => {
+  return useContext(CartContext);
 };
-
-// Custom hook to access the CartContext
-export const useCart = () => useContext(CartContext);

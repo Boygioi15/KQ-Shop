@@ -12,7 +12,6 @@ import { FaPlus  } from "react-icons/fa6";
 import validator from "validator";
 
 export default function AddressModal({addressData, isOpen, onClose}){
-    console.log("HI")
     const isEdit = addressData;
     const {showLoading, hideLoading} = useLoading();
     const navigate = useNavigate();

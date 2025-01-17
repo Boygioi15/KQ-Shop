@@ -24,6 +24,8 @@ import AccountInfoPage from "./pages/UserSpacePages/AccountInfoPage/AccountInfoP
 import { LoadingProvider } from "./contexts/LoadingContext";
 import ChangePasswordPage from "./pages/UserSpacePages/ChangePasswordPage/ChangePasswordPage";
 import AddressPage from "./pages/UserSpacePages/AddressPage/AddressPage";
+import CartCheckoutPage from "./pages/CartCheckoutPage/CartCheckoutPage";
+import TransactionPage from "./pages/TransactionPage/TransactionPage";
 //specified element here
 const router = createBrowserRouter([
   {
@@ -107,7 +109,14 @@ const router = createBrowserRouter([
           },
         ],
       },
-        
+      {
+        path:"cart",
+        element: <CartCheckoutPage />
+      },
+      {
+        path:"transaction",
+        element: <TransactionPage />
+      }
     ],
   },
 ]);

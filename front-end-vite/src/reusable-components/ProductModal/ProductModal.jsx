@@ -8,15 +8,21 @@ import RatingAndReview from "../RatingAndReview/RatingAndReview";
 import SizeChooseBox from "../SizeChooseBox/SizeChooseBox";
 import SmallPictureCard from "../SmallPictureCard/SmallPictureCard";
 import { useLoading } from "../../contexts/LoadingContext";
-
+import { useCart } from "../../contexts/CartContext";
+import { ErrorModal } from "../Modal/Modal";
 export default function ProductModal({productID,handleOnClose}){
     //console.log(productID)
+
+    const {addItemToCart} = useCart();
     const [productDetail,setProductDetail] = useState(null);
     const [selectedColor,setSelectedColor] = useState(null);
     const [selectedSize,setSelectedSize] = useState(null);
     const [selectedImageURL, setSelectedImageURL] = useState(null);
-    
+
     const {showLoading, hideLoading} = useLoading();
+
+    const [AddItemToCart_IsErrorModalOpen,setAddItemToCart_IsErrorModalOpen ] = useState(false);
+    const [AddItemToCart_ErrorMsg, setAddItemToCart_ErrorMsg] = useState("");
     useEffect(() => {
         // Function to fetch events from the backend
         //console.log(productID)
@@ -50,6 +56,22 @@ export default function ProductModal({productID,handleOnClose}){
         }
     },[selectedColor])
 
+    const handleAddItemToCart = async () =>{
+        const productID = productDetail.id;
+        const product_typeID = selectedColor._id;
+        const product_type_detailID = selectedSize._id;
+        const productIdentifier = {productID,product_typeID, product_type_detailID};
+        const quantity = 1;
+        console.log(productDetail);
+        try{
+            await addItemToCart(productIdentifier,quantity)
+        }
+        catch(error){
+            setAddItemToCart_ErrorMsg("Trong kho không có đủ hàng!");
+            setAddItemToCart_IsErrorModalOpen(true);
+        }
+        
+    }
     if(!productDetail||!selectedColor || !selectedSize ||!selectedImageURL){
         return;
     }
@@ -77,7 +99,7 @@ export default function ProductModal({productID,handleOnClose}){
                         </div>
                         <div className="arrayOfImage">
                         {productDetail.types.map((type) => (
-                            <SmallPictureCard imageURL={type.color_ImageURL[0]} compareInfo1={type} selected={type ===selectedColor} handleOnClick={()=>setSelectedColor(type)} />
+                            <SmallPictureCard key={type._id} imageURL={type.color_ImageURL[0]} compareInfo1={type} selected={type ===selectedColor} handleOnClick={()=>setSelectedColor(type)} />
                         ))}
                         </div>
                     </div>
@@ -88,16 +110,22 @@ export default function ProductModal({productID,handleOnClose}){
                         </div>
                         <div className="arrayOfSize">
                         {selectedColor.details.map((detail) => (
-                            <SizeChooseBox size={detail} selected={detail===selectedSize} handleOnClick={()=>setSelectedSize(detail)}/>
+                            <SizeChooseBox key={detail._id} size={detail} selected={detail===selectedSize} handleOnClick={()=>setSelectedSize(detail)}/>
                         ))}
                         </div>
                     </div>
                     <div className="addToCartAndFavorite">
-                        <button className="standard-button-1">THÊM VÀO GIỎ HÀNG</button>
+                        <button onClick={handleAddItemToCart} className="standard-button-1">THÊM VÀO GIỎ HÀNG</button>
                     </div>
                     <NavLink className="nav-link" to={`/product-detail/${productID}`} >Xem sản phẩm chi tiết</NavLink>
                 </div>
             </div>
+
+            <ErrorModal 
+                isOpen={AddItemToCart_IsErrorModalOpen} 
+                onClose={()=>setAddItemToCart_IsErrorModalOpen(false)}
+                message={AddItemToCart_ErrorMsg}
+            />
         </div>
         
     )
