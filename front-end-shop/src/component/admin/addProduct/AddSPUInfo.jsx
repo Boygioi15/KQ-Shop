@@ -28,20 +28,49 @@ const AddSPUInfo = ({
             productData={productData}
             handleChange={handleChange}
           />
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
-          >
-            Thêm sản phẩm
-          </button>
+           
+          <div className="mb-4">
+            <label
+              htmlFor="isPublished"
+              className="block text-gray-700 font-medium mb-2"
+            >
+              Đăng bán
+            </label>
+            <select
+              id="isPublished"
+              name="isPublished"
+              value={String(productData.isPublished)}
+              onChange={(e) => {
+                handleChange({
+                  target: {
+                    name: 'isPublished',
+                    value: e.target.value === 'true'
+                  }
+                });
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="true">Có</option>
+              <option value="false">Không</option>
+            </select>
+          </div>
         </form>
 
-        {/* ThumbnailUpload: Upload ảnh thumbnail */}
-        <ThumbnailUpload
-          productData={productData}
-          setProductData={setProductData}
-        />
+        <div>
+          {/* ThumbnailUpload: Upload ảnh thumbnail đầu tiên */}
+          <ThumbnailUpload
+            productData={productData}
+            setProductData={setProductData}
+            fieldName="init_thumbnailURL"
+          />
+
+          {/* ThumbnailUpload: Upload ảnh thumbnail thứ hai (Hover Image) */}
+          <ThumbnailUpload
+            productData={productData}
+            setProductData={setProductData}
+            fieldName="hover_thumbnailURL"
+          />
+        </div>
       </div>
     </div>
   );

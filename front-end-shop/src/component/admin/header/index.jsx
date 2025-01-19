@@ -3,6 +3,7 @@ import { IoIosMenu, IoIosSearch } from "react-icons/io"; // Import search icon
 import { PiBellSimpleRinging } from "react-icons/pi"; // Import notification icon
 import NotificationMenu from "../../Notification/notificationMenu"; // Notification menu component
 import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion"; // Import framer-motion for animations
 import Search from "../../SearchBox"; // Search component
 
@@ -14,9 +15,12 @@ const Header = ({ setIsSidebarOpen }) => {
     { message: "Flash Sale starting soon!", time: "1 day ago" },
   ];
 
+  const navigate = useNavigate();
   const [notifyIsOpen, setNotifyIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false); // State to control search dialog visibility
-  const userAvatar = useSelector((state) => state.account.user.avatar);
+  const token = localStorage.getItem('access_token')
+  const userAvatar = useSelector((state) => state.account.user.thumbnailURL);
+  console.log(userAvatar)
 
   // Variants for overlay
   const overlayVariants = {
@@ -85,6 +89,13 @@ const Header = ({ setIsSidebarOpen }) => {
             <img
               className="h-12 w-12 rounded-full object-cover cursor-pointer"
               src={userAvatar}
+              onClick={() => {
+                if (!token) {
+                    navigate("/login")
+                } else {
+                    navigate("/profile")
+                }
+              }}
               alt="User Avatar"
             />
           </div>

@@ -115,6 +115,17 @@ export class AuthController {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
   }
 
+  @Post('shop-sign-in')
+  async shopLogin(@Body() shopLoginDto: LoginUserDto) {
+    const { identifier, password } = shopLoginDto;
+
+    if (!this.isValidEmail(identifier)) {
+      throw new BadRequestException('Invalid email format');
+    }
+
+    return this.authService.loginAsShop(identifier, password);
+  }
+
   //   @Post('verify-jwt')
   //   @HttpCode(HttpStatus.OK)
   //   verifyJwt(@Body() payload: { jwt: string }) {

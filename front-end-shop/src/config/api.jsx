@@ -1,8 +1,8 @@
 import axios from "./axios_custom";
 
 /* Module Auth */
-export const callLogin = async (email, password) => {
-  return axios.post("/auth/sign-in", { email, password });
+export const callLogin = async (loginDto) => {
+  return axios.post("/auth/shop-sign-in", loginDto);
 };
 export const callSignUp = async (email) => {
   return axios.post("/auth/sign-up", { email });
@@ -16,13 +16,21 @@ export const callLoginGG = () => {
 };
 
 export const callAccount = async () => {
-  return axios.get("/auth/account");
+  return axios.get("/auth/user-detail");
 };
 
 /*Category*/
 export const getAllCategory = async () => {
   return axios.get("/category");
 };
+
+export const getCategoryIdByName = async (categoryName) => {
+  return axios.get(`/category/id-by-name/${categoryName}`);
+}
+
+export const getCategoryById = async (categoryId) => {
+  return axios.get(`/category/${categoryId}`);
+}
 
 /*Product*/
 export const getAllProductByCategory = async (categorySlug) => {
@@ -109,17 +117,14 @@ export const getImageLink = async (formData) => {
 };
 
 //ProductStock
-export const getAllProduct = async () => {
-  return axios.get("/product/spu/get-all");
-};
-export const getPublishedProduct = async () => {
-  return axios.get("/product/spu/get-published");
-};
-export const getDraftProduct = async () => {
-  return axios.get("/product/spu/get-draft");
+export const getAllProduct = async (isPublished) => {
+  if (isPublished !== undefined) {
+    return axios.get(`/product?isPublished=${isPublished}`);
+  }
+  return axios.get("/product");
 };
 
 //ProductAdd
 export const createNewProduct = async (productData) => {
-  return axios.post("/product", { productData });
+  return axios.post("/product", productData);
 };

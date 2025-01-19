@@ -11,6 +11,7 @@ import { UserService } from './../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
   private tokenBlacklist: Set<string> = new Set();
 
   constructor(
+    private configService: ConfigService,
     private userService: UserService,
     private jwtService: JwtService,
   ) {
@@ -122,9 +124,14 @@ export class AuthService {
     }
     console.log("New user id: " + newUser._id);
     this.otpStore.delete(identifier);
-    const token_1 = this.jwtService.sign({
+    const token_1 = this.jwtService.sign(
+      {
       _id: newUser._id,
-    });
+      },
+      {
+        expiresIn: this.configService.get<string>('JWT_EXPIRES')
+      }
+  );
     return { token_1 };
   }
 
@@ -154,9 +161,14 @@ export class AuthService {
     }
 
     // Generate JWT
-    const token = this.jwtService.sign({
+    const token = this.jwtService.sign(
+      {
       _id: user._id,
-    });
+      },
+      {
+        expiresIn: this.configService.get<string>('JWT_EXPIRES')
+      }
+  );
     return { token };
   }
 
@@ -237,9 +249,14 @@ export class AuthService {
     if (!doesPasswordMatch) {
       throw new BadRequestException('Invalid email or password.');
     }
-    const token = this.jwtService.sign({
+    const token = this.jwtService.sign(
+      {
       _id: user._id,
-    });
+      },
+      {
+        expiresIn: this.configService.get<string>('JWT_EXPIRES')
+      }
+  );
     return { token };
   }
 
@@ -271,7 +288,14 @@ export class AuthService {
       googleId: payload.id,
     });
 
-    const token = this.jwtService.sign({ _id: user._id});
+    const token = this.jwtService.sign(
+      {
+        _id: user._id
+      },
+      {
+        expiresIn: this.configService.get<string>('JWT_EXPIRES')
+      }
+    );
     return { token };
   }
 
@@ -288,7 +312,14 @@ export class AuthService {
       facebookId: payload.id,
     });
 
-    const token = this.jwtService.sign({ _id: user._id});
+    const token = this.jwtService.sign(
+      {
+        _id: user._id
+      },
+      {
+        expiresIn: this.configService.get<string>('JWT_EXPIRES')
+      }
+    );
     return { token };
   }
 
@@ -309,7 +340,14 @@ export class AuthService {
     const { _id } = decodedToken;
 
     // Generate a new token with the same payload
-    const newToken = this.jwtService.sign({ _id: _id});
+    const newToken = this.jwtService.sign(
+      {
+        _id: _id
+      },
+      {
+        expiresIn: this.configService.get<string>('JWT_EXPIRES')
+      }
+    );
 
     return { newToken };
   }
@@ -319,5 +357,30 @@ export class AuthService {
       this.tokenBlacklist.add(token);
     }
     return { message: 'Logged out successfully' };
+  }
+
+  async loginAsShop(email: string, password: string) {
+    console.log(email, password);
+    const user = await this.userService.findByEmail(email);
+  
+    if (!user || !user.isSeller) {
+      throw new BadRequestException('Shop account not found');
+    }
+  
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+  
+    const token = this.jwtService.sign(
+      {
+      _id: user._id
+      },
+      {
+        expiresIn: this.configService.get<string>('JWT_EXPIRES')
+      }
+  );
+  
+    return { token };
   }
 }
