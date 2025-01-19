@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { usePayOS } from "@payos/payos-checkout";
 import './style.css'
-
-const Checkout = () => {
+import axios from "axios";
+import {useNavigate} from "react-router-dom"
+export const Checkout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isCreatingLink, setIsCreatingLink] = useState(false);
@@ -20,21 +21,15 @@ const Checkout = () => {
   });
 
   const { open, exit } = usePayOS(payOSConfig);
-
   const handleGetPaymentLink = async () => {
     setIsCreatingLink(true);
     exit();
-    const response = await fetch(
-      "http://localhost:8000/api/paymentcreate-embedded-payment-link",
-      {
-        method: "POST",
-      }
-    );
-    if (!response.ok) {
+    
+    if (!response) {
       console.log("Server doesn't respond");
     }
-
-    const result = await response.json();
+    window.location.href=response.data.checkoutUrl
+    console.log(response)
     setPayOSConfig((oldConfig) => ({
       ...oldConfig,
       CHECKOUT_URL: result.checkoutUrl,
@@ -56,15 +51,7 @@ const Checkout = () => {
       <div>
         <div className="checkout">
           <div className="product">
-            <p>
-              <strong>Tên sản phẩm:</strong> Mì tôm Hảo Hảo ly
-            </p>
-            <p>
-              <strong>Giá tiền:</strong> 2000 VNĐ
-            </p>
-            <p>
-              <strong>Số lượng:</strong> 1
-            </p>
+
           </div>
           <div className="flex">
             {!isOpen ? (
@@ -144,7 +131,3 @@ const Message = ({ message }) => (
     </div>
   </div>
 );
-
-export default function App() {
-  return <Checkout />;
-}

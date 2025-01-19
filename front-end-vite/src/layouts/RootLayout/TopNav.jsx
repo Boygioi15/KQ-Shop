@@ -100,7 +100,6 @@ function Shortcut(){
                 <div className='sc_dropdown'>
                     <IconShortcut 
                     initIcon={<FaShoppingCart  className='ShortcutIcon'/>}
-                    number={5}
                     />
                     <CartPage className="Cart_Dropdown"/>
                 </div>

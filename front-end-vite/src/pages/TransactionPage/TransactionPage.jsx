@@ -6,6 +6,8 @@ import AddressModal from "../UserSpacePages/AddressPage/AddressModal";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
 import { useCart } from "../../contexts/CartContext";
 import payOS from "../../assets/payOS.svg"
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function TransactionPage(){
     //if user doesn't have address, prompt a note and then an address dialog that is unclosable
@@ -16,6 +18,7 @@ export default function TransactionPage(){
     const {cartDetail, fetchCartDetail, toggleSelectedOfCartShop,toggleSelectAll} = useCart();
     const [localCartDetail, setLocalCartDetail] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState(0)
+    const navigate = useNavigate();
     useEffect(()=>{
         if (!cartDetail) {
             fetchCartDetail();
@@ -39,6 +42,18 @@ export default function TransactionPage(){
             }
         }
     },[Address_isModalOpen,userDetail])
+    const handlePaymentSubmit = async () =>{
+        if(paymentMethod===0){
+            alert("Bạn chưa chọn phương thức thanh toán!")
+            return;
+        }
+        if(paymentMethod===3){
+            const response = await axios.post(
+                "http://localhost:8000/api/payment/create-payment/payOS",
+            );
+            window.location.href=response.data.checkoutUrl
+        }
+    }
     if(!localCartDetail){
         return;
     }   
@@ -116,7 +131,7 @@ export default function TransactionPage(){
                             <img style={{height:"40px",width:"40px"}}src={payOS}/>
                             <label>PayOS</label>
                         </div>
-                        <button className="standard-button-2" style={{width:"100%"}}>
+                        <button onClick={handlePaymentSubmit}className="standard-button-2" style={{width:"100%"}}>
                             THANH TOÁN NGAY
                         </button>
                     </div>

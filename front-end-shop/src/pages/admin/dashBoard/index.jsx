@@ -33,10 +33,6 @@ const DashBoard = () => {
         <SaleChart />
       </section>
 
-      <section className="mt-12">
-        <InventoryChart />
-      </section>
-
       <section className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-8">
         {/* Member vs Non-Member Order Distribution */}
         <MemberOrderChart data={{ series: [65, 35] }} />
