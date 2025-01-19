@@ -61,14 +61,14 @@ const AddSPUInfo = ({
           <ThumbnailUpload
             productData={productData}
             setProductData={setProductData}
-            fieldName="init_thumbnailURL"
+            fieldName="init_ThumbnailURL"
           />
 
           {/* ThumbnailUpload: Upload ảnh thumbnail thứ hai (Hover Image) */}
           <ThumbnailUpload
             productData={productData}
             setProductData={setProductData}
-            fieldName="hover_thumbnailURL"
+            fieldName="hover_ThumbnailURL"
           />
         </div>
       </div>

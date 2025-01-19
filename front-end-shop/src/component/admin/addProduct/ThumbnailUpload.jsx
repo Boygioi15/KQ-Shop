@@ -6,8 +6,8 @@ const ThumbnailUpload = ({ productData, setProductData, fieldName }) => {
   const [isUploading, setIsUploading] = useState(false);
   
   const getFieldLabel = () => {
-    if (fieldName === "init_thumbnailURL") return "Ảnh sản phẩm";
-    if (fieldName === "hover_thumbnailURL") return "Ảnh nổi bật";
+    if (fieldName === "init_ThumbnailURL") return "Ảnh sản phẩm";
+    if (fieldName === "hover_ThumbnailURL") return "Ảnh nổi bật";
     return "Ảnh sản phẩm";
   };
 
