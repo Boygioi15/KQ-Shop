@@ -19,7 +19,7 @@ import {
       FileInterceptor('image', {
         storage: memoryStorage(),
         fileFilter: (req, file, callback) => {
-          if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
             return callback(
               new HttpException(
                 'Only image files are allowed!',

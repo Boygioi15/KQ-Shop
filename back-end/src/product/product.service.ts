@@ -41,10 +41,10 @@ export class ProductService {
   }
 
   async findAllByCategory(categoryID: string) {
-    return await this.productModel.find({ categoryRef: categoryID });
+    return await this.productModel.find({ categoryRef: categoryID, isPublished: true });
   }
   async findAll_Brief(): Promise<BriefProductInterface[]> {
-    const products = await this.productModel.find();
+    const products = await this.productModel.find({isPublished: true});
     return Promise.all(
       products.map(async (product) => {
         try{
@@ -114,7 +114,12 @@ export class ProductService {
       new: true,
     });
   }
-
+  async markProductStopped(id: string){
+    return await this.productModel.findByIdAndUpdate(id,{isPublished: false})
+  }
+  async markProductContinue(id: string){
+    return await this.productModel.findByIdAndUpdate(id,{isPublished: true})
+  }
   async remove(id: string) {
     return await this.productModel.findByIdAndDelete(id);
   }

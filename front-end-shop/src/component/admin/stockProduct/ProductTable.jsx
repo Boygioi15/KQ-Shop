@@ -2,6 +2,7 @@ import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { formatVND } from "../../../utils/format";
 import React, { useState, useEffect } from "react";
 import { getCategoryById } from "../../../config/api";
+import { VscDebugPause, VscDebugContinue  } from "react-icons/vsc";
 
 const ProductTable = ({ products }) => {
   const [categoryNames, setCategoryNames] = useState({});
@@ -59,12 +60,12 @@ const ProductTable = ({ products }) => {
           <tr className="bg-white">
             <th className="p-5 text-left rounded-full">Hình ảnh</th>
             <th className="p-5 text-left">Tên sản phẩm</th>
-            <th className="p-5 text-left">Số lượng</th>
-            <th className="p-5 text-left">Giá</th>
+            <th className="p-5 text-left">Tổng kho hàng</th>
+            <th className="p-5 text-left">Giá hiển thị</th>
             <th className="p-5 text-left">Danh mục</th>
             <th className="p-5 text-left">Màu sắc</th>
             <th className="p-5 text-left">Kích thước</th>
-            <th className="p-5 text-left">Ngày thêm</th>
+            <th className="p-5 text-left">Trạng thái</th>
             <th className="p-5 text-center rounded-full">Tùy chọn</th>
           </tr>
         </thead>
@@ -75,6 +76,7 @@ const ProductTable = ({ products }) => {
                 <img
                   src={product.init_ThumbnailURL || "https://via.placeholder.com/50"}
                   className="h-10 w-10 rounded"
+                  style={{objectFit:"cover"}}
                   alt={product.name}
                 />
               </td>
@@ -100,13 +102,17 @@ const ProductTable = ({ products }) => {
               <td className="p-5 border-b">
                 {product.types[0]?.details.map(detail => detail.size_name).join(", ")}
               </td>
-              <td className="p-5 border-b text-gray-700 font-semibold">
-                {formatDate(product.createdAt)}
+              <td className="p-5 border-b">
+                {product.isPublished? ("Đang bán") : "Đã tạm ngưng"}
               </td>
               <td className="p-5 border-b text-center">
                 <div className="flex justify-center items-center gap-x-2">
                   <AiOutlineEdit className="text-blue-500 cursor-pointer hover:text-blue-700" />
                   <AiOutlineDelete className="text-red-500 cursor-pointer hover:text-red-700" />
+                  {product.isPublished?
+                    <VscDebugPause className="text-yellow-500 cursor-pointer hover:text-blue-700"/> : 
+                    <VscDebugContinue className="text-green-500 cursor-pointer hover:text-blue-700"/>
+                  }
                 </div>
               </td>
             </tr>

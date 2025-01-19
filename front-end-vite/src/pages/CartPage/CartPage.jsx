@@ -8,16 +8,14 @@ export default function CartPage({className}){
     useEffect(()=>{
         if (!cartDetail) {
             fetchCartDetail();
-            //console.log(cartDetail);
         }
-    },[cartDetail]);
+    },[]);
     useEffect(()=>{
         if(cartDetail){
             setLocalCartDetail(cartDetail);
         }
     },[cartDetail])
-    //useEffect(()=>{console.log(localCartDetail)},[localCartDetail])
-    if(!localCartDetail){
+    if(!localCartDetail || !localCartDetail.shopGroup || !localStorage.getItem("token")){
         return;
     }
     return(

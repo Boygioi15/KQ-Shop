@@ -44,7 +44,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative mt-10 flex flex-col h-full">
-          <a href="/admin/dashboard" className="font-bold text-3xl text-black text-start">AppleHouse</a>
+          <a href="/admin/dashboard" className="font-bold text-3xl text-black text-start">KQ-SHOP</a>
           <ul className="space-y-3 my-8 flex-1 text-xl font-bold">
             {ROUTERS.ADMIN.map((item) => (
               <li key={item.name}>

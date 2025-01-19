@@ -62,10 +62,6 @@ export class CreateProductDto {
   hover_thumbnailURL: string;
 
   @IsNotEmpty()
-  @MinLength(50)
-  description: string;
-
-  @IsNotEmpty()
   categoryRef: string;
 
   @IsNotEmpty()

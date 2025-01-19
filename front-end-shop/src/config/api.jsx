@@ -118,9 +118,6 @@ export const getImageLink = async (formData) => {
 
 //ProductStock
 export const getAllProduct = async (isPublished) => {
-  if (isPublished !== undefined) {
-    return axios.get(`/product?isPublished=${isPublished}`);
-  }
   return axios.get("/product");
 };
 

@@ -49,13 +49,12 @@ const StockPage = () => {
     setIsLoading(true); // Bật trạng thái loading
     try {
       const allResponse = await getAllProduct();
+      //console.log(allResponse.data)
+      const pCount = (allResponse.data.filter((item)=>item.isPublished===true)).length;
+      const sCount = (allResponse.data.filter((item)=>item.isPublished===false)).length;
+      setPublishedCount(pCount);
+      setDraftCount(sCount);
       setAllCount(allResponse?.data?.length || 0);
-
-      const publishedResponse = await getAllProduct(true);
-      setPublishedCount(publishedResponse?.data?.length || 0);
-
-      const draftResponse = await getAllProduct(false);
-      setDraftCount(draftResponse?.data?.length || 0);
     } catch (error) {
       console.error("Error fetching counts:", error);
     } finally {
@@ -66,12 +65,13 @@ const StockPage = () => {
   const fetchTabData = async () => {
     setIsLoading(true); // Bật trạng thái loading
     try {
-      let response;
-      if (activeTab === "all") response = await getAllProduct();
-      console.log("🚀 ~ fetchTabData ~ response:", response);
-      if (activeTab === "published") response = await getAllProduct(true);
-      if (activeTab === "draft") response = await getAllProduct(false);
-
+      let response = await getAllProduct();
+      if (activeTab === "published"){
+        response.data = response.data.filter((item)=>item.isPublished===true);
+      } else if (activeTab === "draft"){
+        response.data = response.data.filter((item)=>item.isPublished===false)
+      }
+      console.log(response)
       if (response && response.data) {
         setProducts(response.data);
         setFilteredProducts(response.data);
@@ -149,7 +149,7 @@ const StockPage = () => {
             {[
               { label: "Tất cả", value: "all", count: allCount },
               { label: "Đang bán", value: "published", count: publishedCount },
-              { label: "Đang chờ", value: "draft", count: draftCount },
+              { label: "Đã tạm ngưng", value: "draft", count: draftCount },
             ].map((tab) => (
               <button
                 key={tab.value}

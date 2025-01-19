@@ -111,7 +111,7 @@ const AddVariationsInfo = ({
 
           const response = await getImageLink(formData);
           
-          if (response && response.imageUrl) {
+          if (response) {
             return response.imageUrl;
           } else {
             throw new Error("Failed to upload image");

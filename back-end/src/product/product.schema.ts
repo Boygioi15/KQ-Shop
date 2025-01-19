@@ -49,9 +49,6 @@ export class Product {
   @Prop()
   hover_ThumbnailURL: string;
 
-  @Prop({ required: true })
-  description: string;
-
   @Prop({ type: Types.ObjectId, ref: 'categories' })
   categoryRef: Types.ObjectId;
 
