@@ -122,36 +122,6 @@ const AddProductForm = ({ productData, handleChange }) => {
           placeholder="Nhập tên sản phẩm"
         />
       </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="description"
-          className="block text-gray-700 font-medium mb-2"
-        >
-          Mô tả
-        </label>
-        <ReactQuill
-          id="description"
-          name="description"
-          value={productData.description}
-          onChange={(value) =>
-            handleChange({ target: { name: "description", value } })
-          }
-          modules={modules} // Áp dụng các tùy chỉnh modules vào ReactQuill
-          className="w-full max-h-screen overflow-y-auto border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Nhập mô tả sản phẩm"
-        />
-      </div>
-
-      <div className="space-y-8">
-        {/* Chỉ giữ lại input file với kích thước lớn nhất và màu sắc điều chỉnh */}
-        <input
-          type="file"
-          className="w-full text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-[#2563eb] file:hover:bg-[#1d4ed8] file:text-white rounded"
-          accept=".txt, .docx, .pdf"
-          onChange={handleFileChange}
-        />
-      </div>
     </>
   );
 };
