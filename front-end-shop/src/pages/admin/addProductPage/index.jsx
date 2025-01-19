@@ -8,8 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 const initialProductData = {
   name: "",
-  init_thumbnailURL: "",
-  hover_thumbnailURL: "",
+  init_ThumbnailURL: "",
+  hover_ThumbnailURL: "",
   description: "", 
   attributes: [], 
   category: "",
@@ -50,14 +50,19 @@ const AddProductPage = () => {
       return [];
     }
 
+    console.log(variations)
+    console.log(sku_list)
+
     colorVariation.options.forEach((color, colorIndex) => {
       // Placeholder for color images, modify as needed
-      const color_ImageURL = productData.types_ImageURL[colorIndex] || [];
-
+      const colorSkus = sku_list.filter(sku => sku.sku_index[0] === colorIndex);
+      const colorImages = colorSkus.length > 0 ? colorSkus[0].sku_imgs : [];
+      
+      console.log(colorImages)
       const type = {
         _id: uuidv4(),
         color_name: color,
-        color_ImageURL: color_ImageURL, // Update accordingly
+        color_ImageURL: colorImages, // Add images from sku
         details: [],
       };
 
@@ -155,9 +160,10 @@ const AddProductPage = () => {
     };
 
     try {
+      console.log("🚀 ~ handleCreateNew ~ payload:", payload);
       // Gọi API để tạo sản phẩm mới
       const response = await createNewProduct(payload);
-      console.log("🚀 ~ handleCreateNew ~ response:", response);
+      // console.log("🚀 ~ handleCreateNew ~ response:", response);
 
       if (response.status === 201) {
         alert("Sản phẩm đã được tạo thành công!");
@@ -215,8 +221,8 @@ const AddProductPage = () => {
           name: spu_info.product_name || "",
           category: product.product_category || "",
           description: spu_info.product_description || "",
-          init_thumbnailURL: spu_info.product_thumb || "",
-          hover_thumbnailURL: spu_info.product_hover_thumb || "",
+          init_ThumbnailURL: spu_info.product_thumb || "",
+          hover_ThumbnailURL: spu_info.product_hover_thumb || "",
           // Updated 'details' from string to key-value pairs
           details: spu_info.product_details || {},
           variations: spu_info.product_variations || [],

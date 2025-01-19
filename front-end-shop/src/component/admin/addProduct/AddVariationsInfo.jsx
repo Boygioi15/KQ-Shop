@@ -111,20 +111,18 @@ const AddVariationsInfo = ({
 
           const response = await getImageLink(formData);
           
-          if (response) {
-            return response.imageUrl;
+          if (response && response.data.imageUrl) {
+            return response.data.imageUrl;
           } else {
             throw new Error("Failed to upload image");
           }
         })
       );
-
-      updatedSkuList[skuIndexId].sku_imgs = [
-        ...updatedSkuList[skuIndexId].sku_imgs,
-        ...uploadedImageUrls,
-      ];
+      
+      updatedSkuList[skuIndexId].sku_imgs = uploadedImageUrls;
 
       setSku_list(updatedSkuList);
+      onUpdateSkuList(updatedSkuList);
     } catch (error) {
       console.error("Error uploading images:", error);
       alert("Đã xảy ra lỗi khi tải lên hình ảnh. Vui lòng thử lại.");

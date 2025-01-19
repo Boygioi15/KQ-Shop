@@ -56,10 +56,10 @@ export class CreateProductDto {
 
   slug: string;
   @IsNotEmpty()
-  init_thumbnailURL: string;
+  init_ThumbnailURL: string;
 
   @IsNotEmpty()
-  hover_thumbnailURL: string;
+  hover_ThumbnailURL: string;
 
   @IsNotEmpty()
   categoryRef: string;
