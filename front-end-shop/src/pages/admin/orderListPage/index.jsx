@@ -5,8 +5,8 @@ import OrderTable from '../../../component/admin/orderList/OrderTable';
 const OrderListPage = () => {
   // Sample orders data
   const orders = [
-    { id: '00001', name: 'Christine Brooks', address: '089 Kutch Green Apt.448', date: '04Sep2019', type: 'Electric', status: 'Completed' },
-    { id: '00002', name: 'Rosie Pearson', address: '979 Immanuel Ferry Suite526', date: '28May2019', type: 'Book', status: 'Processing' },
+    { id: '00001', name: 'Kiệt Trần', address: 'Trường Đại học Công nghệ Thông Tin - DHQGTPHCM', date: '21/12/2024', type: 'Shirts', status: 'Completed' },
+    { id: '00002', name: 'Anh Quyền', address: '123 Xa lộ Hà Nội - TPHCM', date: '1/1/2025', type: 'Tank Tops', status: 'Processing' },
     // Add more orders as needed
   ];
 
