@@ -19,10 +19,13 @@ export const CartProvider = ({children}) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
-      console.log("New cart: ")
-      console.log(data);
-      setCartDetail(data);
+      if(response.status!==200 && response.status!==201 && response.status!==204){
+        throw new Error("Không xác thực được người dùng")
+      }
+      else{
+        const data = await response.json();
+        setCartDetail(data);
+      }
     }catch (error) {
       if (error.response) {
           alert(`Lấy thông tin giỏ hàng thất bại, lỗi: ` + error.response.data.msg);

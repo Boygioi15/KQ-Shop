@@ -1,16 +1,19 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLoading } from './LoadingContext';
+import { useCart } from './CartContext';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const {showLoading, hideLoading} = useLoading();
+  const {fetchCartDetail} = useCart();
   const [userDetail, setUserDetail] = useState(null);
   const [signInNotification, setSignInNotification] = useState(false);
   // Update the context state and persist to localStorage
   const signIn = async (newToken) => {
     localStorage.setItem('token', newToken);
     await fetchUserDetail();
+    await fetchCartDetail();
     setSignInNotification(true);
   };
   const signOut = () => {
