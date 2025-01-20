@@ -9,25 +9,27 @@ export default function HomePage(){
     const { token } = useAuth();
 
     return <div className = "HomePage">
-        <CategoryLists />
         <ProductDisplay />
         <button 
         onClick={()=> {navigate('/auth')}}>
-            <h1>Click here to get to auth page</h1>
+            {//<h1>Click here to get to auth page</h1>
+            }
         </button>
-
-        <div>
-            {token ? (
-                <div>
-                <h1>Welcome, {token}</h1>
-                {/* Display user-specific content */}
-                </div>
-            ) : (
-                <div>
-                <h1>Welcome to our website</h1>
-                {/* Display general content */}
-                </div>
-            )}
-        </div>
+        {
+            // <div>
+            //     {token ? (
+            //         <div>
+            //         <h1>Welcome, {token}</h1>
+            //         {/* Display user-specific content */}
+            //         </div>
+            //     ) : (
+            //         <div>
+            //         <h1>Welcome to our website</h1>
+            //         {/* Display general content */}
+            //         </div>
+            //     )}
+            // </div>
+        }
+        
     </div>
 }

@@ -128,7 +128,7 @@ const InventoryChart = () => {
                 updateChartData(category); // Gọi updateChartData khi người dùng chọn category
               }}
             >
-              <option value="iPhone">iPhone</option>
+              <option value="iPhone"></option>
               <option value="iPad">iPad</option>
               <option value="Apple Watch">Apple Watch</option>
               <option value="MacBook">MacBook</option>

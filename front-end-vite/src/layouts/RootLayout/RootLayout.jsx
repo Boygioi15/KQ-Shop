@@ -6,6 +6,7 @@ import './style.css'
 import { CartProvider,useCart } from "../../contexts/CartContext";
 import LoadingScreen from "../../reusable-components/LoadingScreen/LoadingScreen";
 import { useAuth } from "../../contexts/AuthContext";
+import ChatBotWidget from "../../components/ChatBotWidget";
 
 export default function RootLayout({children}){
     
@@ -13,6 +14,7 @@ export default function RootLayout({children}){
         <div className="RootLayout">
         <TopNav />
         <LoadingScreen />
+        <ChatBotWidget />
         {children ?? <Outlet />}
         </div>
     );

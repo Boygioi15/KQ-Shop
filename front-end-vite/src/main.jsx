@@ -26,6 +26,7 @@ import ChangePasswordPage from "./pages/UserSpacePages/ChangePasswordPage/Change
 import AddressPage from "./pages/UserSpacePages/AddressPage/AddressPage";
 import CartCheckoutPage from "./pages/CartCheckoutPage/CartCheckoutPage";
 import TransactionPage from "./pages/TransactionPage/TransactionPage";
+import { Checkout } from "./pages/PaymentPage/Checkout";
 //specified element here
 const router = createBrowserRouter([
   {
@@ -116,6 +117,14 @@ const router = createBrowserRouter([
       {
         path:"transaction",
         element: <TransactionPage />
+      },
+      {
+        path:"checkout",
+        element: <Checkout />
+      },
+      {
+        path:"order-success",
+        element: <SuccessPage />
       }
     ],
   },

@@ -24,7 +24,7 @@
 .QuantitySelector_Dropdown{
     position: absolute;
     top:110%;
-    right: -10px;
+    right: 0px;
     z-index: 2000;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     background-color: white;

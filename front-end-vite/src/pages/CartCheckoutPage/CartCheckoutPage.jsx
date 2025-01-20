@@ -4,9 +4,11 @@ import CartShop from "../../reusable-components/CartShop/CartShop";
 import "./style.css"
 import CartShopV2 from "../../reusable-components/CartShop/CartShopV2";
 import payOS from "../../assets/payOS.svg"
+import { useNavigate } from "react-router-dom";
 export default function CartCheckoutPage(){
     const {cartDetail, fetchCartDetail, toggleSelectedOfCartShop,toggleSelectAll} = useCart();
     const [localCartDetail, setLocalCartDetail] = useState(null);
+    const navigate = useNavigate()
     useEffect(()=>{
         if (!cartDetail) {
             fetchCartDetail();
@@ -75,7 +77,7 @@ export default function CartCheckoutPage(){
                         <label className="modal-product-name-font">Giá cuối cùng: </label>
                         <label style={{fontSize:"32px"}}className="modal-product-price-font">{(+localCartDetail.discountedPrice).toLocaleString('vi-VN')+'đ'}</label>
                     </div>
-                    <button className="standard-button-1" style={{width:"100%"}}>
+                    <button onClick={()=>navigate("/transaction")}className="standard-button-1" style={{width:"100%"}}>
                         THANH TOÁN NGAY
                     </button>
                 </div>
