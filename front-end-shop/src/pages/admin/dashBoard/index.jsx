@@ -14,16 +14,16 @@ const DashBoard = () => {
     <main className="flex-1">
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Dashboard Cards */}
-        <DashboardCard title="Total Users" total="150" rate="5%" levelUp={true}>
+        <DashboardCard title="Total Users" total="123" rate="10%" levelUp={true}>
           <img src={IconTotalUser} alt="Total Users" />
         </DashboardCard>
-        <DashboardCard title="Total Orders" total="150" rate="5%" levelDown={true}>
+        <DashboardCard title="Total Orders" total="23" rate="7%" levelDown={true}>
           <img src={IconTotalOrder} alt="Total Orders" />
         </DashboardCard>
-        <DashboardCard title="Total Sales" total="150" rate="5%" levelDown={true}>
+        <DashboardCard title="Total Sales" total="13" rate="12%" levelDown={true}>
           <img src={IconTotalSales} alt="Total Sales" />
         </DashboardCard>
-        <DashboardCard title="Total Pending" total="150" rate="5%" levelUp={true}>
+        <DashboardCard title="Total Pending" total="35" rate="5%" levelUp={true}>
           <img src={IconTotalPending} alt="Total Pending" />
         </DashboardCard>
       </section>
@@ -38,7 +38,7 @@ const DashBoard = () => {
         <MemberOrderChart data={{ series: [65, 35] }} />
 
         {/* Payment Method Distribution */}
-        <PaymentMethodChart data={{ series: [50, 30, 20] }} />
+        <PaymentMethodChart data={{ series: [50, 20, 30] }} />
       </section>
     </main>
   );

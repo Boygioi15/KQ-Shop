@@ -5,8 +5,8 @@ const PaymentMethodChart = ({ data }) => {
     chart: {
       type: "donut",
     },
-    labels: ["Credit Card", "E-Wallet", "COD"],
-    colors: ["#3C50E0", "#da5436", "#e59230"],
+    labels: ["QR Code", "COD", "MoMo"],
+    colors: ["#3C50E0", "#e59230", "#f15a24"],
     plotOptions: {
       pie: {
         donut: {

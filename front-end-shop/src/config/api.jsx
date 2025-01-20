@@ -116,7 +116,7 @@ export const getImageLink = async (formData) => {
   }
 };
 
-//ProductStock
+//Product
 export const getAllProduct = async (isPublished) => {
   return axios.get("/product", {
     params: {
@@ -125,7 +125,6 @@ export const getAllProduct = async (isPublished) => {
   });
 };
 
-//ProductAdd
 export const createNewProduct = async (productData) => {
   return axios.post("/product", productData);
 };
