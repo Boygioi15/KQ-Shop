@@ -38,7 +38,7 @@ const DashBoard = () => {
         <MemberOrderChart data={{ series: [65, 35] }} />
 
         {/* Payment Method Distribution */}
-        <PaymentMethodChart data={{ series: [70, 30] }} />
+        <PaymentMethodChart data={{ series: [50, 20, 30] }} />
       </section>
     </main>
   );
