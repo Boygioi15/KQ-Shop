@@ -1,12 +1,16 @@
 import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import { VscDebugPause, VscDebugContinue } from "react-icons/vsc";
 import { formatVND } from "../../../utils/format";
 import React, { useState, useEffect } from "react";
-import { getCategoryById } from "../../../config/api";
-import { VscDebugPause, VscDebugContinue  } from "react-icons/vsc";
+import { getCategoryById, removeProduct, markProductContinue, markProductStop } from "../../../config/api";
+import { toast } from "react-toastify";
 
-const ProductTable = ({ products }) => {
+const ProductTable = ({ products, onProductDeleted, onStatusChanged }) => {
   const [categoryNames, setCategoryNames] = useState({});
   const [failedCategories, setFailedCategories] = useState(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [loadingStatus, setLoadingStatus] = useState(null);
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -53,6 +57,45 @@ const ProductTable = ({ products }) => {
     return new Intl.DateTimeFormat("en-GB").format(date);
   };
 
+  const handleStatusChange = async (productId, newStatus) => {
+    try {
+      setLoadingStatus(productId);
+      if (newStatus) {
+        await markProductContinue(productId);
+        console.log('Product continued:', newStatus);
+      } else {
+        await markProductStop(productId);
+        console.log('Product stopped:', newStatus);
+      }
+      onStatusChanged && onStatusChanged(productId, newStatus);
+      toast.success(`Sản phẩm đã ${newStatus ? 'được đăng bán' : 'tạm ngưng'}`);
+    } catch (error) {
+      toast.error('Cập nhật trạng thái thất bại');
+    } finally {
+      setLoadingStatus(null);
+    }
+  };
+
+  const handleDelete = async (productId) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+      try {
+        setIsDeleting(true);
+        setSelectedProductId(productId);
+        await removeProduct(productId);
+        toast.success('Xóa sản phẩm thành công');
+        if (onProductDeleted) {
+          onProductDeleted(productId); 
+        }
+      } catch (error) {
+        toast.error('Xóa sản phẩm thất bại');
+        console.error('Delete error:', error);
+      } finally {
+        setIsDeleting(false);
+        setSelectedProductId(null);
+      }
+    }
+  };
+
   return (
     <div className="hidden md:block">
       <table className="w-full bg-white table-auto shadow-md rounded-lg">
@@ -60,12 +103,12 @@ const ProductTable = ({ products }) => {
           <tr className="bg-white">
             <th className="p-5 text-left rounded-full">Hình ảnh</th>
             <th className="p-5 text-left">Tên sản phẩm</th>
-            <th className="p-5 text-left">Tổng kho hàng</th>
-            <th className="p-5 text-left">Giá hiển thị</th>
+            <th className="p-5 text-left">Số lượng</th>
+            <th className="p-5 text-left">Giá</th>
             <th className="p-5 text-left">Danh mục</th>
             <th className="p-5 text-left">Màu sắc</th>
             <th className="p-5 text-left">Kích thước</th>
-            <th className="p-5 text-left">Trạng thái</th>
+            <th className="p-5 text-left">Ngày thêm</th>
             <th className="p-5 text-center rounded-full">Tùy chọn</th>
           </tr>
         </thead>
@@ -76,7 +119,6 @@ const ProductTable = ({ products }) => {
                 <img
                   src={product.init_ThumbnailURL || "https://via.placeholder.com/50"}
                   className="h-10 w-10 rounded"
-                  style={{objectFit:"cover"}}
                   alt={product.name}
                 />
               </td>
@@ -102,17 +144,33 @@ const ProductTable = ({ products }) => {
               <td className="p-5 border-b">
                 {product.types[0]?.details.map(detail => detail.size_name).join(", ")}
               </td>
-              <td className="p-5 border-b">
-                {product.isPublished? ("Đang bán") : "Đã tạm ngưng"}
+              <td className="p-5 border-b text-gray-700 font-semibold">
+                {formatDate(product.createdAt)}
               </td>
               <td className="p-5 border-b text-center">
                 <div className="flex justify-center items-center gap-x-2">
                   <AiOutlineEdit className="text-blue-500 cursor-pointer hover:text-blue-700" />
-                  <AiOutlineDelete className="text-red-500 cursor-pointer hover:text-red-700" />
-                  {product.isPublished?
-                    <VscDebugPause className="text-yellow-500 cursor-pointer hover:text-blue-700"/> : 
-                    <VscDebugContinue className="text-green-500 cursor-pointer hover:text-blue-700"/>
-                  }
+                  <AiOutlineDelete 
+                    className={`text-red-500 cursor-pointer hover:text-red-700 ${
+                      isDeleting && selectedProductId === product._id ? 'opacity-50' : ''
+                    }`}
+                    onClick={() => !isDeleting && handleDelete(product._id)}
+                  />
+                  {loadingStatus === product._id ? (
+                    <span className="text-gray-400">Loading...</span>
+                  ) : product.isPublished ? (
+                    <VscDebugPause 
+                      className="text-yellow-500 cursor-pointer hover:text-yellow-700"
+                      onClick={() => handleStatusChange(product._id, false)}
+                      title="Tạm ngưng bán"
+                    />
+                  ) : (
+                    <VscDebugContinue 
+                      className="text-green-500 cursor-pointer hover:text-green-700"
+                      onClick={() => handleStatusChange(product._id, true)}
+                      title="Đăng bán"
+                    />
+                  )}
                 </div>
               </td>
             </tr>

@@ -118,10 +118,26 @@ export const getImageLink = async (formData) => {
 
 //ProductStock
 export const getAllProduct = async (isPublished) => {
-  return axios.get("/product");
+  return axios.get("/product", {
+    params: {
+      isPublished: isPublished
+    }
+  });
 };
 
 //ProductAdd
 export const createNewProduct = async (productData) => {
   return axios.post("/product", productData);
+};
+
+export const removeProduct = async (productId) => {
+  return axios.delete(`/product/${productId}`);
+}
+
+export const markProductStop = async (productId) => {
+  return axios.patch(`/product/${productId}/mark-stop`);
+};
+
+export const markProductContinue = async (productId) => {
+  return axios.patch(`/product/${productId}/mark-continue`);
 };
