@@ -61,7 +61,7 @@ export default function TransactionPage(){
             hideLoading();
             console.log("Res:")
             console.log(response)
-            window.location.href="https://pay.payos.vn/web/3547cd9f0fb448d295a15f3f368f0cb0/"
+            window.location.href="https://pay.payos.vn/web/0df2c02b8f59486aa9efb189cfc4b48a"
         }
         else if(paymentMethod===2){
             showLoading();
