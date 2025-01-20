@@ -86,7 +86,7 @@ const Search = ({ className }) => {
           type="text"
           value={textSearch}
           onChange={handleChange}
-          placeholder="Nhập vào tên thiết bị cần tìm"
+          placeholder="Tìm kiếm chức năng"
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
           className="w-full pl-10 px-4 py-2 border rounded-md focus:outline-none"

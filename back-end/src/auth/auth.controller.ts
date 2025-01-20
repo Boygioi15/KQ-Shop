@@ -85,7 +85,7 @@ export class AuthController {
   async googleAuthRedirect(@Req() req, @Res() res: Response) {
     const token = await this.authService.googleLogin(req);
     const tokenString = typeof token === 'string' ? token : token.token;
-    res.redirect(`http://localhost:5173/auth/social-callback?token=${encodeURIComponent(tokenString)}`);
+    res.redirect(`http://localhost:5500/auth/social-callback?token=${encodeURIComponent(tokenString)}`);
   }
 
   @Get('facebook')
@@ -98,7 +98,7 @@ export class AuthController {
     const token = await this.authService.facebookLogin(req);
     console.log(token)
     const tokenString = typeof token === 'string' ? token : token.token;
-    res.redirect(`http://localhost:5173/auth/social-callback?token=${encodeURIComponent(tokenString)}`);
+    res.redirect(`http://localhost:5500/auth/social-callback?token=${encodeURIComponent(tokenString)}`);
   }
 
   @Post('logout')

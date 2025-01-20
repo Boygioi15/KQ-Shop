@@ -132,13 +132,7 @@ function Shortcut(){
                         className="abc_label">Đăng xuất</label>
                     </div>}
                 </div>               
-                <IconShortcut 
-                  initIcon={<FaRegHeart className='ShortcutIcon'/>}
-                  number={3}
-                />
-                <IconShortcut 
-                  initIcon={<IoIosHelpCircleOutline className='ShortcutIcon'/>}
-                />
+
             </div>
             
         </div>

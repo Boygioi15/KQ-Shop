@@ -68,22 +68,6 @@ const Header = ({ setIsSidebarOpen }) => {
             <IoIosSearch />
           </button>
 
-          {/* Notification Section */}
-          <div
-            onMouseEnter={() => setNotifyIsOpen(true)}
-            onMouseLeave={() => setNotifyIsOpen(false)}
-            className="relative text-3xl font-extrabold"
-          >
-            <PiBellSimpleRinging />
-            <span className="absolute top-0 right-0 text-[0.6rem] bg-red-500 text-white rounded-full w-3.5 h-3.5 flex items-center justify-center">
-              {mockNotifications.length}
-            </span>
-            {/* Dropdown Menu for Notifications */}
-            {notifyIsOpen && (
-              <NotificationMenu notifications={mockNotifications} />
-            )}
-          </div>
-
           {/* User Avatar */}
           <div className="relative">
             <img

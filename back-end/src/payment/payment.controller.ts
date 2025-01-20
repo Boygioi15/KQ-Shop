@@ -27,6 +27,8 @@ export class PaymentController {
   async createPaymentLink(@Res() res: any,@Req() req) {
     try {
       const paymentLinkResponse = await this.paymentService.createPaymentLink_PayOS(req.user._id);
+      console.log("Res:");
+      console.log(paymentLinkResponse)
       res.status(200).json({ checkoutUrl: paymentLinkResponse.checkoutUrl });
     } catch (error) {
       console.error(error);
