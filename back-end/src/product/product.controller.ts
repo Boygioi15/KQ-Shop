@@ -50,11 +50,11 @@ export class ProductController {
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(id, updateProductDto);
   }
-  @Patch(":/id/mark-stop")
+  @Patch(":id/mark-stop")
   markProductStopped(@Param('id') id: string){
     return this.productService.markProductStopped(id);
   }
-  @Patch(":/id/mark-continue")
+  @Patch(":id/mark-continue")
   markProductContinue(@Param('id') id: string){
     return this.productService.markProductContinue(id);
   }

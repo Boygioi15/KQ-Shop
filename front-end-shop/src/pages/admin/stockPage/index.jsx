@@ -45,16 +45,50 @@ const StockPage = () => {
     handleFilterProducts();
   }, [filters, products]);
 
+  const handleStatusChanged = async (productId, newStatus) => {
+    try {
+      setIsLoading(true);
+      await fetchTabCounts();
+      await fetchTabData();
+    } catch (error) {
+      console.error("Error updating after status change:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleProductDeleted = async (deletedProductId) => {
+    try {
+      setIsLoading(true);
+      // Remove from local state first for immediate UI update
+      setProducts(prevProducts => 
+        prevProducts.filter(p => p._id !== deletedProductId)
+      );
+      setFilteredProducts(prevFiltered => 
+        prevFiltered.filter(p => p._id !== deletedProductId)
+      );
+
+      // Refresh data from server
+      await fetchTabCounts();
+      await fetchTabData();
+    } catch (error) {
+      console.error("Error updating after deletion:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const fetchTabCounts = async () => {
     setIsLoading(true); // Bật trạng thái loading
     try {
       const allResponse = await getAllProduct();
-      //console.log(allResponse.data)
-      const pCount = (allResponse.data.filter((item)=>item.isPublished===true)).length;
-      const sCount = (allResponse.data.filter((item)=>item.isPublished===false)).length;
-      setPublishedCount(pCount);
-      setDraftCount(sCount);
       setAllCount(allResponse?.data?.length || 0);
+
+      const publishedResponse = await getAllProduct(true);
+      setPublishedCount(publishedResponse?.data?.length || 0);
+
+      const draftResponse = await getAllProduct(false);
+      setDraftCount(draftResponse?.data?.length || 0);
     } catch (error) {
       console.error("Error fetching counts:", error);
     } finally {
@@ -65,13 +99,11 @@ const StockPage = () => {
   const fetchTabData = async () => {
     setIsLoading(true); // Bật trạng thái loading
     try {
-      let response = await getAllProduct();
-      if (activeTab === "published"){
-        response.data = response.data.filter((item)=>item.isPublished===true);
-      } else if (activeTab === "draft"){
-        response.data = response.data.filter((item)=>item.isPublished===false)
-      }
-      console.log(response)
+      let response;
+      if (activeTab === "all") response = await getAllProduct();
+      if (activeTab === "published") response = await getAllProduct(true);
+      if (activeTab === "draft") response = await getAllProduct(false);
+
       if (response && response.data) {
         setProducts(response.data);
         setFilteredProducts(response.data);
@@ -149,7 +181,7 @@ const StockPage = () => {
             {[
               { label: "Tất cả", value: "all", count: allCount },
               { label: "Đang bán", value: "published", count: publishedCount },
-              { label: "Đã tạm ngưng", value: "draft", count: draftCount },
+              { label: "Đang chờ", value: "draft", count: draftCount },
             ].map((tab) => (
               <button
                 key={tab.value}
@@ -167,7 +199,11 @@ const StockPage = () => {
 
           {/* Product Table */}
           <div className="hidden md:block">
-            <ProductTable products={paginatedProducts()} />
+            <ProductTable 
+              products={paginatedProducts()}
+              onProductDeleted={handleProductDeleted} 
+              onStatusChanged={handleStatusChanged}
+            />
           </div>
 
           {/* Collapse View for Small Screens */}
