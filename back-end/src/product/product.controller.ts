@@ -28,6 +28,11 @@ export class ProductController {
   findAll_Search_Brief(@Param('content') content: string){
     return this.productService.findAll_Search_Brief(content);
   }
+  @Get('/shop')
+  findAll_Shop(){
+
+  }
+  
   @Get('modal/:id')
   findOne_Modal(@Param('id') id: string){
     return this.productService.findOne_Modal(id);
