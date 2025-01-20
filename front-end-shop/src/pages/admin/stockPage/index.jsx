@@ -181,7 +181,7 @@ const StockPage = () => {
             {[
               { label: "Tất cả", value: "all", count: allCount },
               { label: "Đang bán", value: "published", count: publishedCount },
-              { label: "Đang chờ", value: "draft", count: draftCount },
+              { label: "Đã tạm ngưng", value: "draft", count: draftCount },
             ].map((tab) => (
               <button
                 key={tab.value}
