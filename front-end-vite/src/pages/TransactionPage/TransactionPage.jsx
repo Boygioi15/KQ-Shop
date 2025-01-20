@@ -59,7 +59,9 @@ export default function TransactionPage(){
             });
             
             hideLoading();
-            window.location.href=response.data
+            console.log("Res:")
+            console.log(response)
+            window.location.href="https://pay.payos.vn/web/3547cd9f0fb448d295a15f3f368f0cb0/"
         }
         else if(paymentMethod===2){
             showLoading();

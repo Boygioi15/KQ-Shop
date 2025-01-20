@@ -8,7 +8,9 @@ import RatingAndReview from "../../reusable-components/RatingAndReview/RatingAnd
 import SizeChooseBox from "../../reusable-components/SizeChooseBox/SizeChooseBox";
 import QuantitySelector from "../../reusable-components/QuantitySelector/QuantitySelector";
 import { useLoading } from "../../contexts/LoadingContext";
+import { useCart } from "../../contexts/CartContext";
 export default function ProductDetailPage(){
+    const {addItemToCart} = useCart();
     const {id} = useParams();
     const [productDetail,setProductDetail] = useState(null);
     const [selectedColor,setSelectedColor] = useState(null);
@@ -48,7 +50,22 @@ export default function ProductDetailPage(){
             //console.log(selectedColor.color_ImageURL)
         }
     },[selectedColor])
-
+    const handleAddItemToCart = async () =>{
+        const productID = productDetail.id;
+        const product_typeID = selectedColor._id;
+        const product_type_detailID = selectedSize._id;
+        const productIdentifier = {productID,product_typeID, product_type_detailID};
+        const quantity = 1;
+        console.log(productDetail);
+        try{
+            await addItemToCart(productIdentifier,quantity)
+        }
+        catch(error){
+            setAddItemToCart_ErrorMsg("Trong kho không có đủ hàng!");
+            setAddItemToCart_IsErrorModalOpen(true);
+        }
+        
+    }
     if(!productDetail||!selectedColor || !selectedSize ||!selectedImageURL){
         return;
     }
@@ -91,10 +108,9 @@ export default function ProductDetailPage(){
                         ))}
                         </div>
                         <div style={{marginTop: "10px"}}className="addToCartAndFavorite">
-                            <button className="standard-button-1">THÊM VÀO GIỎ HÀNG</button>
+                            <button onClick={handleAddItemToCart} className="standard-button-1">THÊM VÀO GIỎ HÀNG</button>
                         </div>
                     </div>
-                   
                 </div>
             </div>
             <div style={{textAlign:"center", marginTop:"20px"}}>
