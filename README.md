@@ -10,7 +10,7 @@ Along side developing the project, we also analyze and the design the system wit
 
 Main functionalities: 
 
- - Authentication with social link to Google, Facebook 
+ - Authentication using JWT with social link to Google, Facebook 
  - Cart & Payment with Momo and PayOS 
  - Chatbot for product suggestion
 
