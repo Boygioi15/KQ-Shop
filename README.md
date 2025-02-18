@@ -8,10 +8,11 @@ Along side developing the project, we also analyze and the design the system wit
  - Class & model diagram and State & sequence diagram  for analyzing code 
  - UI roadmap
 
-Main functionalities: 
+Remarkable functionalities: 
 
  - Authentication using JWT with social link to Google, Facebook 
- - Cart & Payment with Momo and PayOS 
+ - Cart & Payment with Momo and PayOS
+ - Product variations
  - Chatbot for product suggestion
 
 ## Tech stack
