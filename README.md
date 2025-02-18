@@ -2,13 +2,13 @@
 ### Contributors: 
  - Anh Quyen
  - Kiet Tran
-### Main features
+### System analyzing
 Along side developing the project, we also analyze and the design the system with: 
  - Use case diagram for specifying use cases
  - Class & model diagram and State & sequence diagram  for analyzing code 
  - UI roadmap
 
-Remarkable functionalities: 
+### Remarkable features: 
 
  - Authentication using JWT with social link to Google, Facebook 
  - Cart & Payment with Momo and PayOS
